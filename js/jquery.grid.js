@@ -89,8 +89,6 @@
 				footer.append(dataListCountUrl);
 				
 				var numberOfPages = Math.floor(dataRowCount / settings.rowCount) + (dataRowCount % settings.rowCount > 0 ? 1: 0);
-				console.log((dataRowCount / settings.rowCount));
-				console.log(numberOfPages);
 				var paginationDiv = "<div class='pagination'><ul>";
 				for(var i = 0; i < numberOfPages; i++){
 					var pageNumber = i + 1;
@@ -99,7 +97,6 @@
 				paginationDiv += "</ul></div>";
 				parentDiv.append(paginationDiv);
 			}
-			console.log(data);
 		},"json");
 
 		return this;

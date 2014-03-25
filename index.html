@@ -1,0 +1,15 @@
+<html>
+<head>
+	<title>Try out</title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.one.grid.css">
+</head>
+<body>
+	<div id='grid-container'></div>
+</body>
+<script type="text/javascript" src='js/jquery.js'></script>
+<!-- <script type="text/javascript" src='js/base.js'></script> -->
+<script type="text/javascript" src='js/jquery.one.grid.js'></script>
+<script type="text/javascript">
+	$('#grid-container').grid({filters: ["me", "you"], dataListUrl: "list url", dataCountUrl : "data count url", identityColumn: "column", columns: [{name: "one"}, {name: "two"}, {name: "three"}] });
+</script>
+</html>
