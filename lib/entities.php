@@ -86,7 +86,7 @@ class User
 	}
 
 	public static function findUser($id){
-		$query = "select * from ".User::TABLE." where id = $id";
+		$query = "select * from ".User::TABLE." where id = $id limit 1";
 		$user = null;
 		$conn = DB::get_connection();
 		foreach ($conn->query($query) as $row) {
@@ -110,8 +110,9 @@ class User
 		return ToJson(get_class(), $args,array("id", "usertype", "username", "password", "removed"));
 	}
 
-	public static function userCount (){
-		$query = "select count(id) as record_count from ".User::TABLE." where removed = 0;";
+	public static function countUser ($removed = 0){
+		$query = "select count(id) as record_count from ".User::TABLE.
+			" where removed = $removed limit 1;";
 		$conn = Db::get_connection();
 		$usercount = 0;
 		foreach ($conn->query($query) as $row) {
@@ -201,7 +202,7 @@ class Member
 	}
 
 	public static function findMember($Member_id){
-		$query = "select * from ".Member::TABLE." where id = $Member_id";
+		$query = "select * from ".Member::TABLE." where id = $Member_id limit 1";
 		$conn = Db::get_connection();
 		$member = null;
 		foreach ($conn->query($query) as $row) {
@@ -210,8 +211,9 @@ class Member
 		return $member;
 	}
 
-	public static function memberCount(){
-		$query = "select count(id) as record_count from ".Member::TABLE." where removed = 0";
+	public static function countMember($removed = 0){
+		$query = "select count(id) as record_count from ".Member::TABLE.
+			" where removed = $removed limit 1";
 		$conn = Db::get_connection();
 		$count = 0;
 		foreach ($conn->query($query) as $row) {
@@ -220,6 +222,7 @@ class Member
 		return $count;
 	}
 	
+
 	public static function toJson($args){
 		return ToJson(get_class(), $args, array("id", "firstname", "othernames", "gender", 
 			"registration_date", "added_by", "picture_url", "removed", "phonenumber", 
@@ -298,7 +301,7 @@ class Association
 
 	public static function findAssociation($id){
 		$conn = Db::get_connection();
-		$query = "select * from ".Association::TABLE." where id = $id";
+		$query = "select * from ".Association::TABLE." where id = $id limit 1";
 		$result = null;
 		foreach ($conn->query($query) as $row) {
 			$result = Association::returnAssociationFromResource($row);
@@ -309,6 +312,17 @@ class Association
 	public static function toJson($args){
 		return ToJson(get_class(), $args, array("id", "name", "description", "date_added", 
 			"added_by", "removed", "removed_by", "reason_removed", "date_removed"));
+	}
+
+	public static function countAssociation($removed = 0){
+		$query = "select count(id) as row_count from ".Association::TABLE.
+			" where removed = $removed limit 1";
+		$count = 0;
+		$conn = Db::get_connection();
+		foreach ($conn->query($query) as $row) {
+			$count = $row['row_count'];
+		}
+		return $count;
 	}
 }
 
@@ -387,12 +401,23 @@ class AssociationDue
 
 	public static function findAssociationDue($association_id){
 		$conn = Db::get_connection();
-		$query = "select * from ".AssociationDue::TABLE." where id = $association_id and removed = 0";
+		$query = "select * from ".AssociationDue::TABLE." where id = $association_id and removed = 0 limit 1";
 		$result = null;
 		foreach ($conn->query($query) as $row) {
 			$result = AssociationDue::returnAssociationDueFromResource($row);
 		}
 		return $result;
+	}
+
+	public static function countAssociationDue($removed = 0){
+		$query = "select count(id) as row_count from ".AssociationDue::TABLE.
+			" where removed = $removed limit 1";
+		$conn = Db::get_connection();
+		$count = 0;
+		foreach ($conn->query($query) as $row) {
+			$count = $row['row_count'];
+		}
+		return $count;
 	}
 }
 
@@ -485,13 +510,24 @@ class MemberAssociation
 	}
 
 	public static function findMemberAssociation($id){
-		$query = "select * from ".MemberAssociation." where id = $id";
+		$query = "select * from ".MemberAssociation::TABLE." where id = $id limit 1";
 		$conn = Db::get_connection();
 		$result = null;
 		foreach ($conn->query as $row) {
 			$result = returnMemberAssociationFromResource($row);
 		}
 		return $result;
+	}
+
+	public static function countMemberAssociation($removed = 0){
+		$query = "select count(id) as row_count from ".MemberAssociation::TABLE.
+			" where removed = $removed limit 1";
+		$conn = Db::get_connection();
+		$count = 0;
+		foreach ($conn->query($query) as $row) {
+			$count = $row['row_count'];
+		}
+		return $count;
 	}
 }
 
@@ -574,12 +610,23 @@ class MemberAssociationDue
 	}
 
 	public static function findMemberAssociationDue($id){
-		$query = "select * from ".MemberAssociationDue::TABLE." where id = $id";
+		$query = "select * from ".MemberAssociationDue::TABLE." where id = $id limit 1";
 		$result = null;
 		$conn = Db::get_connection();
 		foreach ($conn->query($query) as $row) {
 			$result = returnMemberAssociationDueFromResource($row);
 		}
 		return $result;
+	}
+
+	public static function countMemberAssociationDue($removed = 0){
+		$query = "select count(id) as row_count from ".MemberAssociationDue::TABLE.
+			" where removed = $removed limit 1";
+		$count = 0;
+		$conn = Db::get_connection();
+		foreach ($conn->query($query) as $row) {
+			$count = $row['row_count'];
+		}
+		return $count;
 	}
 }
