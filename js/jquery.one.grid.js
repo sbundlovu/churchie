@@ -52,9 +52,9 @@
 			}else{
 				//do this if the filters that are passed to it is an array
 				for(var i = 0, k = settings.filters.length; i < k; i++){
-					var control = "<div class='filter-element-div'>";
+					var control = "<div class='filter-element-div'><label>" + settings.filters[i]['name'];
 					control += "<select id='"+ settings.filters[i]['name'];
-					control += "'><option>--filter--</option></select></div>";
+					control += "'><option>--filter--</option></select></label></div>";
 					filterDiv.append(control);
 				}
 			}
@@ -68,6 +68,7 @@
 		//controls
 		parent.append("<div id='data-footer-div'></div>");
 		dataFooterDiv = $("body #data-footer-div");
+		
 		var filterNamesControl = "<input type='hidden' id='filterNames' value='" +
 			settings.filters.toString() +"'/>";
 		dataFooterDiv.append(filterNamesControl);
@@ -111,7 +112,7 @@
 			}
 			$.extend({index: offset, limit: limit}, args);
 			
-			$.get(settings.dataListUrl, args,function(data){
+			$.get(dataListUrl, args,function(data){
 				//create table
 
 			},'json');
