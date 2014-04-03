@@ -75,7 +75,6 @@ class User
 		$query .= " order by id desc";
 		
 		$query .= check_list_limits($args);
-
 		$users = array();
 		$conn = Db::get_connection();
 		foreach ($conn->query($query) as $row) {
@@ -110,9 +109,10 @@ class User
 		return ToJson(get_class(), $args,array("id", "usertype", "username", "password", "removed"));
 	}
 
-	public static function countUser ($removed = 0){
+	public static function countUser($removed = 0){
 		$query = "select count(id) as record_count from ".User::TABLE.
 			" where removed = $removed limit 1;";
+		print $query;
 		$conn = Db::get_connection();
 		$usercount = 0;
 		foreach ($conn->query($query) as $row) {

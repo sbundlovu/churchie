@@ -18,27 +18,39 @@
 			ColumnsNotSuppliedError = "Columns to display haven't been supplied",
 			NoIdentityColumnError = "No Column has been specified to be used as the unique identifier for a row",
 			NoDataListUrlError = "Url for getting a list of data hasn't been specified",
-			NoDataCountUrlError = "Url for counting the number of data row hasn't been specified";
+			NoDataCountUrlError = "Url for counting the number of data row hasn't been specified",
+			ExtraControlsNotArrayError = "The contorls specified in the extraControls parameter wasn't specified inf an Array";
 
-		if(!settings.hasOwnProperty("dataListUrl")){
-			throw NoDataListUrlError;
-		}
+		var validateSettings = function(settings){
+			if(settings.extraControls != null || settings.extraControls != undefined){
+				if(!Array.isArray(settings.extraControls)){
+					throw ExtraControlsNotArrayError;
+				}
+			}
 
-		if(!settings.hasOwnProperty('dataCountUrl')){
-			throw NoDataCountUrlError;
+			if(!settings.hasOwnProperty("dataListUrl")){
+				throw NoDataListUrlError;
+			}
+
+			if(!settings.hasOwnProperty('dataCountUrl')){
+				throw NoDataCountUrlError;
+			}
+			
+			if(!settings.hasOwnProperty("identityColumn")){
+				throw NoIdentityColumnError;
+			}
+
+			if(settings.hasOwnProperty("columns")){
+				if(!Array.isArray(settings.columns)){
+					throw ColumnsNotArrayError;
+				}
+			}else{
+				throw ColumnsNotSuppliedError;
+			}
 		}
 		
-		if(!settings.hasOwnProperty("identityColumn")){
-			throw NoIdentityColumnError;
-		}
-
-		if(settings.hasOwnProperty("columns")){
-			if(!Array.isArray(settings.columns)){
-				throw ColumnsNotArrayError;
-			}
-		}else{
-			throw ColumnsNotSuppliedError;
-		}
+		//validation arguments to the plugin
+		validateSettings(settings);
 
 		if(settings.hasOwnProperty("filters")){
 			//create filters if filters have been passed to it
@@ -52,8 +64,9 @@
 			}else{
 				//do this if the filters that are passed to it is an array
 				for(var i = 0, k = settings.filters.length; i < k; i++){
-					var control = "<div class='filter-element-div'><label>" + settings.filters[i]['name'];
-					control += "<select id='"+ settings.filters[i]['name'];
+					var filterName = settings.filters[i];
+					var control = "<div class='filter-element-div'><label>" + filterName;
+					control += "<select id='"+ filterName;
 					control += "'><option>--filter--</option></select></label></div>";
 					filterDiv.append(control);
 				}
@@ -92,36 +105,55 @@
 		};
 
 		//create table header
-		var createTableHeader = function(columns){
+		var createTableHeader = function(settings){
+			var columns = settings.columns,
+				tableHeader,
+				theaderRow = "",
+				extraControls = settings.extraControls;
+
 			$("body #data-div").append(("<table id='grid-proper'><thead></thead>"+
 				"<tbody></tbody><tfoot></tfoot></table>"));
-			var tableHeader = $("body #grid-proper thead");
-			var theaderRow = "";
+			tableHeader = $("body #grid-proper thead");
+
 			for(var i = 0, k = columns.length; i < k; i++){
 				theaderRow += ("<th>" + columns[i].name + "</th>");
+			}
+			if(extraControls != null && extraControls != undefined){
+				theaderRow += ("<th>Operations</th>");
 			}
 			tableHeader.append(theaderRow);
 		};
 		
-		createTableHeader(settings.columns);
+		createTableHeader(settings);
 		
 		//create the table for the data to be displayed
-		var loadGridData = function(dataListUrl, offset, limit, args){
-			if(args === undefined && args === null){
-				args = {};
-			}
-			$.extend({index: offset, limit: limit}, args);
-			
-			$.get(dataListUrl, args,function(data){
-				//create table
+		var loadGridData = function(settings){
+			var dataListUrl = settings.dataListUrl;
+			var args = {index: settings.offset, limit: settings.limit};
+			var columns = settings.columns;
+			var extraControls = settings.extraControls;
+			var tableBody = $("body #grid-proper tbody");
+			$.get(dataListUrl, args, function(data){
+				$.each(data, function(index, value){
+					var tableRow = "<tr>";
+					for(var i = 0, k = columns.length; i < k; i++){
+						tableRow += ("<td>" + value[columns[i]["name"]] + "</td>");
+					}
 
+					for(var i = 0, k = extraControls.length; i < k; i++){
+						tableRow += ("<td>" + extraControls[i] + "</td>");
+					}
+					
+					tableRow += "</tr>";
+					tableBody.append(tableRow);
+				});
 			},'json');
 		};
 		
-		loadGridData(settings.dataListUrl, settings.offset, settings.limit);
+		loadGridData(settings);
 		
 		//create pagination controls
-		$.get(setting.dataCountUrl, function(data){
+		$.get(settings.dataCountUrl, function(data){
 		
 		},"json");
 		
