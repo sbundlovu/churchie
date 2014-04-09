@@ -10,10 +10,11 @@
 <!-- <script type="text/javascript" src='js/base.js'></script> -->
 <script type="text/javascript" src='js/jquery.one.grid.js'></script>
 <script type="text/javascript">
-	$('#grid-container').grid({filters: ["username", "usertype"], dataListUrl: "/churchie/api.php/user/", 
+	$('#grid-container').grid({filterControls: ["username", "usertype"], dataListUrl: "/churchie/api.php/user", 
 		dataCountUrl : "/churchie/api.php/user/meta/count", identityColumn: "id", 
 		columns: [{name: "id"},{name: "username"}, {name: "usertype"}], 
-		extraControls: ["<input type='checkbox'>"]
-	}); 
+		extraControls: ["<input type='checkbox'>"],
+		filters: [{removed: "0"}]
+	});
 </script>
 </html>

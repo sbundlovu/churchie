@@ -33,4 +33,4 @@ include_once("lib/entities.php");
 // $memberAssociationDue->dues = date("m");
 // print " => ".$memberAssociationDue->save();
 // print var_dump($associationDue);
-print " => ".User::listUsers(array("index" => 0, "limit" => 1, "removed" => 1));
+print var_dump(User::listUsers(array("index" => 0, "limit" => 1, "removed" => 1)));

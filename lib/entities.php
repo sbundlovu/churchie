@@ -109,10 +109,11 @@ class User
 		return ToJson(get_class(), $args,array("id", "usertype", "username", "password", "removed"));
 	}
 
-	public static function countUser($removed = 0){
+	public static function countUser($args = array('removed' => 0, 'usertype' => 'attendant')){
 		$query = "select count(id) as record_count from ".User::TABLE.
-			" where removed = $removed limit 1;";
-		print $query;
+			" where usertype = '".$args['usertype']."'";
+		$args['and'] = true;
+		$query = queryBuilder($query, $args);
 		$conn = Db::get_connection();
 		$usercount = 0;
 		foreach ($conn->query($query) as $row) {
