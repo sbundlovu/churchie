@@ -9,10 +9,10 @@
 		var parent = this,
 			filterDiv,
 			dataDiv,
-			dataFooterDiv,
 			settings = $.extend({
 				offset: 0, 
 				limit: 100 }, option),
+			NoFilterUrlError = "The url for getting the values for the filters hasn't been provided",
 			FilterControlsNotArrayError = "Filters must be an array",
 			ColumnsNotArrayError = "Columns must be an array",
 			ColumnsNotSuppliedError = "Columns to display haven't been supplied",
@@ -50,7 +50,10 @@
 
 			if(settings.hasOwnProperty("filters")){
 				if(!Array.isArray(settings.filters)){
-
+					throw FilterControlsNotArrayError;
+				}
+				if(!settings.hasOwnProperty('filterUrl')){
+					throw NoFilterUrlError;
 				}
 			}
 		}
@@ -70,39 +73,38 @@
 			}else{
 				//do this if the filterControls that are passed to it is an array
 				for(var i = 0, k = settings.filterControls.length; i < k; i++){
-					var filterName = settings.filterControls[i];
-					var control = "<div class='filter-element-div'><label>" + filterName;
+					var filterName = settings.filterControls[i],
+						control = "<div class='filter-element-div'><label>" + filterName;
+
 					control += "<select id='"+ filterName;
 					control += "'><option>--filter--</option></select></label></div>";
 					filterDiv.append(control);
 				}
+				filterDiv.append("<button id='search'>Search</button>");
 			}
 		}
 
 		//create div for holding data
 		parent.append("<div id='data-div'></div>");
-		dataDiv = $("body #data-div");
 		
 		//create hidden field in footer that contains the names of the filter
 		//controls
 		parent.append("<div id='data-footer-div'></div>");
-		dataFooterDiv = $("body #data-footer-div");
-		
-		var filterNamesControl = "<input type='hidden' id='filterNames' value='" +
-			settings.filterControls.toString() +"'/>";
-		dataFooterDiv.append(filterNamesControl);
 		
 		//function for getting the values from the FilterControls
 		var getFilterControlsAndValues = function(){
-			var filterControlsAndValues = {};
-			var filterNames = $("#data-footer-div #filterNames").val();
+			var filterName, 
+				filterControlValue, 
+				filterControlsAndValues = {},
+				filterNames = $("#data-footer-div #filterNames").val();
+
 			if(filterNames !== ""){
 				filterNames = filterNames.split(',');
 			}
 			if(Array.isArray(filterNames)){
 				for(var i = 0, k = filterNames; i < k; i++){
-					var filterName = filterNames[i];
-					var filterControlValue = $('#'+ filterName).val();
+					filterName = filterNames[i];
+					filterControlValue = $('#'+ filterName).val();
 					filterControlsAndValues[filterName] = (filterControlValue === '--filter--' ? 
 						null : filterControlValue);
 				}
@@ -130,17 +132,17 @@
 			tableHeader.append(theaderRow);
 		};
 		
-		createTableHeader(settings);
-		
 		//create the table for the data to be displayed
 		var loadGridData = function(settings){
-			var dataListUrl = settings.dataListUrl;
-			var args = {index: settings.offset, limit: settings.limit};
-			var columns = settings.columns;
-			var extraControls = settings.extraControls;
-			var tableBody = $("body #grid-proper tbody");
-			//add the values in the filter to the arguments passed to the server
-			var filterControlsAndValues = getFilterControlsAndValues();
+			var tableRow,
+				columnName,
+				dataListUrl = settings.dataListUrl,
+				args = {index: settings.offset, limit: settings.limit},
+				columns = settings.columns,
+				extraControls = settings.extraControls,
+				tableBody = $("body #grid-proper tbody"),
+				//add the values in the filter to the arguments passed to the server
+				filterControlsAndValues = getFilterControlsAndValues();
 
 			if(filterControlsAndValues != null && filterControlsAndValues != {}){
 				for(var name in filterControlsAndValues){
@@ -150,9 +152,10 @@
 			tableBody.html("");
 			$.get(dataListUrl, args, function(data){
 				$.each(data, function(index, value){
-					var tableRow = "<tr id='" + value[settings.identityColumn] + "'>";
+					tableRow = "<tr id='" + value[settings.identityColumn] + "'>";
 					for(var i = 0, k = columns.length; i < k; i++){
-						tableRow += ("<td>" + value[columns[i]["name"]] + "</td>");
+						columnName = columns[i]['name'];
+						tableRow += ("<td>" + value[columnName] + "</td>");
 					}
 
 					if(extraControls != null && extraControls != undefined && Array.isArray(extraControls)){
@@ -167,18 +170,28 @@
 			},'json');
 		};
 		
-		loadGridData(settings);
-
 		//create pagination controls
 		var createPaginationControls = function(settings){
-			var filterControlsAndValues = getFilterControlsAndValues();
+			var cols, 
+				DictName, 
+				args, 
+				startingPoint, 
+				pageSize, 
+				page, 
+				resultCount, 
+				numberOfPages, 
+				paginationDiv, 
+				pageNumber, 
+				filterControlsAndValues = getFilterControlsAndValues(),
+				dataFooterDiv = $("body #data-footer-div");
+
 			$.get(settings.dataCountUrl,filterControlsAndValues, function(data){
-				var resultCount = data['count'];
-				var numberOfPages = (Math.floor(resultCount / settings.limit) + 
+				resultCount = data['count'];
+				numberOfPages = (Math.floor(resultCount / settings.limit) + 
 					(resultCount % settings.limit > 0 ? 1: 0));
-				var paginationDiv = "<div class='pagination'><ul>";
+				paginationDiv = "<div class='pagination'><ul>";
 				for(var i = 0; i < numberOfPages; i++){
-					var pageNumber = i + 1;
+					pageNumber = i + 1;
 					paginationDiv += "<li><a href='"+pageNumber+"' class='page'>"+pageNumber+"</li>";
 				}
 				paginationDiv += "</ul></div>";
@@ -189,61 +202,147 @@
 			$("body").off('click', '.page');
 			$("body").on("click", ".page", function(event){
 				event.preventDefault();
-				var page = Number($(this).attr("href"));
-				var pageSize = Number($("#limit").val());
-				var startingPoint = (pageSize * (page-1));
-				var args = getFilterControlsAndValues();
+				page = Number($(this).attr("href"));
+				pageSize = Number($("#limit").val());
+				startingPoint = (pageSize * (page-1));
+				args = getFilterControlsAndValues();
 				args['offset'] = startingPoint;
 				args['limit'] = pageSize;
 				args['dataListUrl'] =  $('body #dataListUrl').val();
 				args['dataCountUrl'] = $('body #dataCountUrl').val();
 				args['columns'] = '';
-				var DictName = [];
-				var cols = $('body #columns').val().toString().split(',');
+				DictName = [];
+				cols = $('body #columns').val().toString().split(',');
 				for (var i = 0, k = cols.length; i < k; i ++){
 					DictName.push({'name': cols[i]});
 				}
 				args['columns'] = DictName;
 				args['identityColumn'] = $('body #identityColumn').val();
-				args['extraControls'] = $('body #extraControls').val();
+				args['extraControls'] = $.jStorage.get('extraControls', undefined); //$('body #extraControls').val();
 				loadGridData(args);
 			});
 		};
-		
-		createPaginationControls(settings);
 
 		//adding the dataListUrl and dataCountUrl to the footer div for later
 		//calls to the api during pagination
-		var createFooterForListAndCountUrl = function(settings, dataFooterDiv){
-			var dataListUrlControl = "<input type='hidden' id='dataListUrl' value='" +
+		var createFooterForUrls = function(settings){
+			var filterNamesControl,
+				dataListUrlControl, 
+				dataCountUrlControl, 
+				cols, 
+				columns, 
+				columnsControl,
+				identityColumnControl,
+				dataFooterDiv = $("body #data-footer-div");
+			
+			filterNamesControl = "<input type='hidden' id='filterNames' value='" +
+				settings.filterControls.toString() +"'/>";
+			
+			dataFooterDiv.append(filterNamesControl);
+			dataListUrlControl = "<input type='hidden' id='dataListUrl' value='" +
 				settings.dataListUrl + "'/>";
-			var dataCountUrlControl = "<input type='hidden' id='dataCountUrl' value='" +
+			dataCountUrlControl = "<input type='hidden' id='dataCountUrl' value='" +
 				settings.dataCountUrl + "'/>";
 
-			var cols = settings.columns;
-			var columns = [];
+			cols = settings.columns;
+			columns = [];
 			for(var i = 0, k = cols.length; i < k; i++){
 				columns.push(cols[i]['name']);
 			}
-			var columnsControl = "<input type='hidden' id='columns' value='"+ 
+			columnsControl = "<input type='hidden' id='columns' value='"+ 
 				columns.toString() + "'/>";
-			var identityColumnControl = "<input type='hidden' id='identityColumn' value='" +
+			identityColumnControl = "<input type='hidden' id='identityColumn' value='" +
 				settings.identityColumn +"' />";
 
 			dataFooterDiv.append(dataListUrlControl).append(
 				dataCountUrlControl).append(columnsControl
 				).append(identityColumnControl);
 
-			// if(settings.hasOwnProperty('extraControls')){
-			// 	var control = "<input type='hidden' id='extraControls' value='" +
-			// 		settings.extraControls.toString().trim() +"' />";
-			// 	console.log(control);
-			// 	dataFooterDiv.append(control);
-			// }
+			if(settings.hasOwnProperty('extraControls')){
+				$.jStorage.set('extraControls', settings.extraControls);
+			}
 		};
 		
-		createFooterForListAndCountUrl(settings,dataFooterDiv);
+		var getValuesForFilters = function(settings){
+			var args,
+				contrl,
+				filterString = "",
+				controls = settings.filterControls,
+				url = settings.filterUrl;
+
+			filterString = controls.toString();
+			args = {'filters': filterString};
+
+			$.get(url, args, function(data){
+				for(var index in controls){
+					contrl = $(("#" +controls[index]));
+					for(var i = 0, k = data[controls[index]].length; i < k; i++){
+						contrl.append(("<option>"+ data[controls[index]][i] +"</option>"));
+					}
+				}
+			});
+		};
 		
+		$("body").on("click", "#search", function(event){
+			event.preventDefault();
+
+			var settings = {},
+				columns,
+				DictName = [];
+
+			columns = $("#columns").val();
+			columns = columns.toString().split(',');
+
+			for(var i = 0, k = columns.length; i < k; i++){
+				DictName.push({'name': columns[i]});
+			}
+
+			settings = {
+				'dataListUrl': $("#dataListUrl").val(),
+				'dataCountUrl': $("#dataCountUrl").val(),
+				'columns': DictName,
+				'identityColumn': $("#identityColumn").val(),
+				'extraControls': $.jStorage.get('extraControls', undefined),
+				'limit': $("#limit").val(),
+				'offset': 0
+			};
+
+			loadGridData(settings);
+		});
+
+		//timeout for resetting the values in the grid
+		setInterval(function(){
+			console.log('here');
+			var settings = {},
+				columns,
+				DictName = [];
+
+			columns = $("#columns").val();
+			columns = columns.toString().split(',');
+
+			for(var i = 0, k = columns.length; i < k; i++){
+				DictName.push({'name': columns[i]});
+			}
+
+			settings = {
+				'dataListUrl': $("#dataListUrl").val(),
+				'dataCountUrl': $("#dataCountUrl").val(),
+				'columns': DictName,
+				'identityColumn': $("#identityColumn").val(),
+				'extraControls': $.jStorage.get('extraControls', undefined),
+				'limit': $("#limit").val(),
+				'offset': 0
+			};
+
+			loadGridData(settings);
+		}, 6000);
+		
+		createTableHeader(settings);
+		createFooterForUrls(settings);
+		loadGridData(settings);
+		createPaginationControls(settings);
+		getValuesForFilters(settings);
+
 		return this;
 	};
 

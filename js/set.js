@@ -34,5 +34,13 @@ Set.prototype = {
 		for (var value in this._values) {
 			iteratorFunction.call(thisObj, this._values[value]);
 		}
+	},
+
+	get: function get(){
+		var results = [];
+		for (var item in this._values){
+			results.push(item);
+		}
+		return results;
 	}
 };

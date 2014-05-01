@@ -121,6 +121,32 @@ class User
 		}
 		return $usercount;
 	}
+
+	public static function getFilters($args = array('username', 'usertype'), 
+		$filters = array('removed' => 0)){
+
+		$results = array();
+		foreach ($args as $key) {
+			$query = "select distinct $key from ".User::TABLE;
+			if($filters != null && is_array($filters)){
+				$filterAddedAlready = false;
+				foreach ($filters as $rkey => $value) {
+					if(!$filterAddedAlready){
+						$query .= " where $rkey = $value";	
+					}else{
+						$query .= " and $rkey = $value";
+					}
+					$filterAddedAlready = true;
+				}
+			}
+			$conn = Db::get_connection();
+			$results[$key] = array();
+			foreach ($conn->query($query) as $row) {
+				array_push($results[$key], $row[$key]);
+			}
+		}
+		return $results;
+	}
 }
 
 /**
