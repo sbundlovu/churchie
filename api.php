@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Silex\Application();
 $app['debug'] = true;
 
+session_start();
+
 CONST DEFAULT_MAX_RESULT_SIZE = 100;
 
 $app->get('/', function() use($app){
@@ -17,5 +19,7 @@ $app->get('/', function() use($app){
 });
 
 $app->mount('/user', include 'user.php');
+
+$app->mount('/member', include 'member.php');
 
 $app->run();

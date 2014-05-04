@@ -42,9 +42,8 @@ class User
 	}
 
 	public function save(){
-		//TODO: add md5
 		$query = "insert into ".User::TABLE." (username, password, usertype) ".
-			"values ('$this->username','$this->password', '$this->usertype')";
+			"values ('$this->username',md5('$this->password'), '$this->usertype')";
 		$conn = Db::get_connection();
 		return $conn->exec($query);
 	}
@@ -96,7 +95,7 @@ class User
 
 	public static function login($username, $password){
 		$query = "select * from ".User::TABLE." where username = '$username'".
-			" and password = '$password' and removed = 0 limit 1";
+			" and password = md5('$password') and removed = 0 limit 1";
 		$user = null;
 		$conn = DB::get_connection();
 		foreach ($conn->query($query) as $row) {
@@ -124,28 +123,7 @@ class User
 
 	public static function getFilters($args = array('username', 'usertype'), 
 		$filters = array('removed' => 0)){
-
-		$results = array();
-		foreach ($args as $key) {
-			$query = "select distinct $key from ".User::TABLE;
-			if($filters != null && is_array($filters)){
-				$filterAddedAlready = false;
-				foreach ($filters as $rkey => $value) {
-					if(!$filterAddedAlready){
-						$query .= " where $rkey = $value";	
-					}else{
-						$query .= " and $rkey = $value";
-					}
-					$filterAddedAlready = true;
-				}
-			}
-			$conn = Db::get_connection();
-			$results[$key] = array();
-			foreach ($conn->query($query) as $row) {
-				array_push($results[$key], $row[$key]);
-			}
-		}
-		return $results;
+		return getFilters(User::TABLE, $args, $filters);
 	}
 }
 
@@ -203,7 +181,7 @@ class Member
 
 	public function remove(){
 		$query = "update ".Member::TABLE." set removed = 1, reason_removed".
-				 " = '$this->reason_removed', date_removed = '$this->date_removed'".
+				 " = '$this->reason_removed', date_removed = '".date('d-m-Y')."'".
 				 " where id = $this->id";
 		$conn = Db::get_connection();
 		return $conn->exec($query);
@@ -216,12 +194,22 @@ class Member
 	}
 
 	public static function listMembers($args = array("removed" => 0, "index" => 0, "limit" => 100)){
-		$query = "select * from ".Member::TABLE;
-		$args['and'] = false;
-		$query = queryBuilder($query, $args);
+		$query = "select * from ".Member::TABLE." where removed = ". $args['removed'];
+		if($args['firstname'] != null){
+			$query .= " and firstname = '".$args['firstname']."'";
+		}
+		if($args['othernames'] != null){
+			$query .= " and othernames = '".$args['othernames']."'";
+		}
+		if($args['gender'] != null){
+			$query .= " and gender = '".$args['gender']."'";
+		}
+		if($args['phonenumber'] != null){
+			$query .= " and phonenumber = '".$args['phonenumber']."'";
+		}
+		$query .= " order by registration_date desc ";
 		$conn = Db::get_connection();
 		$members = array();
-		print $query;
 		foreach ($conn->query($query) as $row) {
 			array_push($members, Member::returnMemberFromResource($row));
 		}
@@ -240,7 +228,7 @@ class Member
 
 	public static function countMember($removed = 0){
 		$query = "select count(id) as record_count from ".Member::TABLE.
-			" where removed = $removed limit 1";
+			" where removed = $removed";
 		$conn = Db::get_connection();
 		$count = 0;
 		foreach ($conn->query($query) as $row) {
@@ -248,12 +236,16 @@ class Member
 		}
 		return $count;
 	}
-	
 
 	public static function toJson($args){
 		return ToJson(get_class(), $args, array("id", "firstname", "othernames", "gender", 
 			"registration_date", "added_by", "picture_url", "removed", "phonenumber", 
 			"reason_removed", "date_removed"));
+	}
+
+	public static function getFilters($args = array('firstname', 'othernames', 'gender', 'phonenumber'),
+		$filters = array('removed' => 0)){
+		return getFilters(Member::TABLE, $args, $filters);
 	}
 }
 
