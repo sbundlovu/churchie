@@ -487,7 +487,7 @@ class MemberAssociation
 
 	public function delete(){
 		$query = "update ".MemberAssociation::TABLE." set removed_by = $this->removed_by, removed = 1".
-			", reason_removed = '$this->reason_removed' date_removed = '".date('d-m-Y')."' where id = $this->id";
+			", reason_removed = '$this->reason_removed', date_removed = '".date('d-m-Y')."' where id = $this->id";
 		$conn = Db::get_connection();
 		return $conn->exec($query);
 	}
@@ -504,24 +504,18 @@ class MemberAssociation
 			"date_removed"));
 	}
 
-	public static function listMemberAssociations($args = array("index" => 0, 
-		"limit" => 100, "removed" => 0)){
+	public static function listMemberAssociations($args = array("member_id" => null, 
+		'association_id' => null, "index" => 0, "limit" => 100, "removed" => 0)){
 
 		$query = "select * from ".MemberAssociation::TABLE;
-		$query = queryBuilder($query, $args);
-		$conn = Db::get_connection();
-		$memberAssociations = array();
-		foreach ($conn->query($query) as $row) {
-			array_push($memberAssociations, 
-				MemberAssociation::returnMemberAssociationFromResource($row));
+		if(array_key_exists('member_id', $args) && $args['member_id'] != null){
+			$query .= ' where member_id = '.$args['member_id']; 
+			$args['and'] = true;
 		}
-		return $memberAssociations;
-	}
-
-	public static function listAssociationsForMember($args = array("member_id" => 0, 
-		"index" => 0, "limit" => 100, "removed" => 0)){
-
-		$query = "select * from ".MemberAssociation::TABLE." where member_id = ".$args["member_id"];
+		if(array_key_exists('association_id', $args) && $args['association_id'] != null){
+			$query .= ' and association_id = '.$args['association_id'];
+			$args['and'] = true;
+		}
 		$query = queryBuilder($query, $args);
 		$conn = Db::get_connection();
 		$memberAssociations = array();
@@ -536,21 +530,34 @@ class MemberAssociation
 		$query = "select * from ".MemberAssociation::TABLE." where id = $id limit 1";
 		$conn = Db::get_connection();
 		$result = null;
-		foreach ($conn->query as $row) {
-			$result = returnMemberAssociationFromResource($row);
+		foreach ($conn->query($query) as $row) {
+			$result = MemberAssociation::returnMemberAssociationFromResource($row);
 		}
 		return $result;
 	}
 
-	public static function countMemberAssociation($removed = 0){
+	public static function countMemberAssociation($args = array('removed' => 0, 
+		'member_id' => null, 'association_id' => null)){
 		$query = "select count(id) as row_count from ".MemberAssociation::TABLE.
-			" where removed = $removed limit 1";
+			" where removed = ".$args['removed'];
+		if(array_key_exists('member_id', $args) && $args['member_id'] != null){
+			$query .= " and memer_id = ".$args['member_id'];
+		}
+		if(array_key_exists('association_id', $args) && $args['association_id'] != null){
+			$query .= " and association_id = ".$args['association_id'];
+		}
+		$query .=" limit 1";
 		$conn = Db::get_connection();
 		$count = 0;
 		foreach ($conn->query($query) as $row) {
 			$count = $row['row_count'];
 		}
 		return $count;
+	}
+
+	public static function getFilters($args = array('member_id', 'association_id'), 
+		$filter = array('removed' => 0)){
+		return getFilters(MemberAssociation::TABLE, $args, $filter);
 	}
 }
 

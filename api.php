@@ -26,4 +26,6 @@ $app->mount('/association', include 'endpoints/association.php');
 
 $app->mount('/association_due', include 'endpoints/associationdue.php');
 
+$app->mount('/member_association', include 'endpoints/memberassociation.php');
+
 $app->run();
