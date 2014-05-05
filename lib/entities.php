@@ -243,7 +243,7 @@ class Member
 			"reason_removed", "date_removed"));
 	}
 
-	public static function getFilters($args = array('firstname', 'othernames', 'gender', 'phonenumber'),
+	public static function getFilters($args = array('id', 'firstname', 'othernames', 'gender', 'phonenumber'),
 		$filters = array('removed' => 0)){
 		return getFilters(Member::TABLE, $args, $filters);
 	}
@@ -277,7 +277,7 @@ class Association
 	public function save(){
 		$query = "insert into ".Association::TABLE." (name, description, date_added,".
 			" added_by) values('$this->name', '$this->description', '".date("d-m-Y").
-			"', added_by);";
+			"', $this->added_by);";
 
 		$conn = Db::get_connection();
 		return $conn->exec($query);
@@ -294,7 +294,6 @@ class Association
 		$query = "update ".Association::TABLE." set removed = 1, removed_by = ".
 			"$this->removed_by, reason_removed = '$this->reason_removed', ".
 			"date_removed = '".date("d-m-Y")."' where id = $this->id";
-		print $query;
 		$conn = Db::get_connection();
 		return $conn->exec($query);
 	}
@@ -342,6 +341,11 @@ class Association
 			$count = $row['row_count'];
 		}
 		return $count;
+	}
+
+	public static function getFilters($args = array('id', 'name', 'description'), 
+		$filters = array('removed' => 0)){
+		return getFilters(Association::TABLE, $args, $filters);
 	}
 }
 
@@ -394,7 +398,7 @@ class AssociationDue
 			"dues", "date_added", "removed_by", "removed", 'date_removed'));
 	}
 
-	private static function toJson($args){
+	public static function toJson($args){
 		return ToJson(get_class(), $args, array("id", "association_id", "dues", "date_added", 
 			"removed", "removed_by", 'date_removed'));
 	}

@@ -23,7 +23,7 @@ $user->get('/meta/count', function(Request $request) use ($app){
 	$args = array();
 	$args['removed'] = $request->get('removed') != null ? addslashes($request->get('removed')) : 0;
 	$args['usertype'] = $request->get('usertype') != null ? addslashes($request->get('usertype')) : 'attendant';
-	return $app->json(array('count' => User::countUser($args)));
+	return $app->json(array('count' => User::countUser($args)), 200);
 });
 
 $user->get('/filter', function(Request $request) use ($app){

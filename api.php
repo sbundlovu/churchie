@@ -22,4 +22,8 @@ $app->mount('/user', include 'user.php');
 
 $app->mount('/member', include 'member.php');
 
+$app->mount('/association', include 'association.php');
+
+$app->mount('/association_due', include 'associationdue.php');
+
 $app->run();
