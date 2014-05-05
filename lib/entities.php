@@ -541,7 +541,7 @@ class MemberAssociation
 		$query = "select count(id) as row_count from ".MemberAssociation::TABLE.
 			" where removed = ".$args['removed'];
 		if(array_key_exists('member_id', $args) && $args['member_id'] != null){
-			$query .= " and memer_id = ".$args['member_id'];
+			$query .= " and member_id = ".$args['member_id'];
 		}
 		if(array_key_exists('association_id', $args) && $args['association_id'] != null){
 			$query .= " and association_id = ".$args['association_id'];

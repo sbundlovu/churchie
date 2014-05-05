@@ -28,4 +28,6 @@ $app->mount('/association_due', include 'endpoints/associationdue.php');
 
 $app->mount('/member_association', include 'endpoints/memberassociation.php');
 
+$app->mount('/member_association_due', include 'endpoints/memberassociationdue.php');
+
 $app->run();
