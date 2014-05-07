@@ -18,16 +18,16 @@ $app->get('/', function() use($app){
 	return "Hello world";
 });
 
-$app->mount('/user', include 'endpoints/user.php');
+$app->mount('/users', include 'endpoints/user.php');
 
-$app->mount('/member', include 'endpoints/member.php');
+$app->mount('/members', include 'endpoints/member.php');
 
-$app->mount('/association', include 'endpoints/association.php');
+$app->mount('/associations', include 'endpoints/association.php');
 
-$app->mount('/association_due', include 'endpoints/associationdue.php');
+$app->mount('/association_dues', include 'endpoints/associationdue.php');
 
-$app->mount('/member_association', include 'endpoints/memberassociation.php');
+$app->mount('/member_associations', include 'endpoints/memberassociation.php');
 
-$app->mount('/member_association_due', include 'endpoints/memberassociationdue.php');
+$app->mount('/member_association_dues', include 'endpoints/memberassociationdue.php');
 
 $app->run();
