@@ -78,27 +78,29 @@ function returnObjectFromResource($class, $resource, $fieldList = array()){
 	return $object;
 }
 
-function getFilters($table, $args = array('username', 'usertype'), 
+function getFilters($table, $args = array(), 
 	$filters = array('removed' => 0)){
 
 	$results = array();
 	foreach ($args as $key) {
-		$query = "select distinct $key from $table";
+		$key_ = trim($key);
+		$query = "select distinct $key_ from $table";
 		if($filters != null && is_array($filters)){
 			$filterAddedAlready = false;
 			foreach ($filters as $rkey => $value) {
 				if(!$filterAddedAlready){
-					$query .= " where $rkey = $value";	
+					$rkey_ = trim($rkey);
+					$query .= " where $rkey_ = $value";	
 				}else{
-					$query .= " and $rkey = $value";
+					$query .= " and $rkey_ = $value";
 				}
 				$filterAddedAlready = true;
 			}
 		}
 		$conn = Db::get_connection();
-		$results[$key] = array();
+		$results[$key_] = array();
 		foreach ($conn->query($query) as $row) {
-			array_push($results[$key], $row[$key]);
+			array_push($results[$key_], $row[$key_]);
 		}
 	}
 	return $results;
