@@ -24,7 +24,8 @@ var showMsg = function(tag, msgType,msg){
 	}, 1000);
 };
 
-var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount, columns, identityColumn, extraControls){
+var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount, 
+		columns, identityColumn, extraControls){
 	$(gridTag).html("");
 	$(gridTag).grid({listDataUrl: listUrl, listDataCountUrl: countUrl, 
 		startingPoint: startingPoint, rowCount: rowCount, 

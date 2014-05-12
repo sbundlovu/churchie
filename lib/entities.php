@@ -723,3 +723,32 @@ class MemberAssociationDue
 		return getFilters(MemberAssociationDue::TABLE, $args, $filter);
 	}
 }
+
+/**
+* Menu Item
+*/
+class MenuItem
+{
+	public const TABLE = "menu_structure";
+
+	public static list($usertype){
+		$query = "select endpoint from ".MenuItem::TABLE." where usertype = '$usertype'";
+		$conn = Db::get_connection();
+		$menuItems = array();
+		foreach ($conn->query($query) as $row) {
+			array_push($menuItems, $row['endpoint']);
+		}
+		return $menuItems;
+	}
+
+	public static IsUserAuthourized($usertype, $endpoint){
+		$query = "select count(id) from ".MenuItem::TABLE.
+			" where usertype = $usertype and endpoint = $endpoint";
+		$conn = Db::get_connection();
+		$count = 0;
+		foreach ($conn->query($query) as $row) {
+			$count = $row['id'];
+		}
+		return ($count > 0);
+	}
+}
