@@ -36,8 +36,5 @@ $app->run();
 
 function isLogin(){
 	$user = $_SESSION['user'];
-	if($user != null){
-		return true;
-	}
-	return false;
+	return ($user != null);
 }

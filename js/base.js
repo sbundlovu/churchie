@@ -33,31 +33,23 @@ var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount,
 		extraControls: extraControls});		
 };
 
-var createMenu = function(userType){
+var createMenu = function(){
 	var menu = $(".navbar>.navbar-inner>.nav");
 	var url = apiBaseUrl + "/menus";
 	$.get(
 		url,
 		"json"
 	).done(function(data){
-		console.log(data);
-		// userType = data['usertype'];
-		// console.log(data);
-		// menu.addClass("pull-right");
-		// menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		// menu.append("<li><a href='#' id='attendance-menu'>Attendance</a></li>");
-		// menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		// menu.append("<li><a href='#' id='registration-menu'>Registration</a></li>");
-
-		// if(userType == "admin"){
-		// 	menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		// 	menu.append("<li><a href='#' id='user-menu'>User</a></li>");
-		// 	menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		// 	menu.append("<li><a href='#' id='equipment-menu'>Equipment</a></li>");
-		// 	menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		// }
+		var result = data.result;
+		var menuItem = null;
+		menu.addClass("pull-right");
+		for(var i = 0, k = result.length; i < k; i++){
+			menu.append("<li class='divider-vertical'>&nbsp;</li>");
+			menuItem = "<li><a href='"+ result[i]['endpoint'] +"'>"+ result[i]['name'] +"</a></li>"
+			menu.append(menuItem);
+		}
 		menu.append("<li><a href='#' id='log-out'>Log Out</a></li>");
-
+		$(".navbar>.navbar-inner>.nav>li").addClass("capitalize");
 	}).fail(function(data){
 		self.location = (baseUrl + "/");
 	});
@@ -68,26 +60,6 @@ var checkIfLoggedIn = function(){
 	console.log(userType);
 	return userType;
 };
-
-$("body").on("click", "#attendance-menu", function(event){
-	event.preventDefault();
-	self.location = baseUrl + "/attendance.html";
-});
-
-$("body").on("click", "#registration-menu", function(event){
-	event.preventDefault();
-	self.location = baseUrl + "/registration.html";
-});
-
-$("body").on("click", "#user-menu", function(event){
-	event.preventDefault();
-	self.location = baseUrl + "/User.html";
-});
-
-$("body").on("click", "#equipment-menu", function(event){
-	event.preventDefault();
-	self.location = baseUrl + "/equipment.html";
-});
 
 $("body").on("click", "#log-out", function(event){
 	event.preventDefault();

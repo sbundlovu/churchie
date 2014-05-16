@@ -5,6 +5,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 $user = $app['controllers_factory'];
 
+session_start();
+
 $user->get('/', function(Request $request) use ($app){
 	$args = array();
 	$args['index'] = $request->get('index') != null ? addslashes($request->get('index')) : 0;
@@ -57,7 +59,6 @@ $user->put('/{userid}', function(Request $request, $userid) use ($app){
 })->assert('userid', '\d+');
 
 $user->post('/login', function(Request $request) use ($app){
-	session_start();
 	$username = $request->get('username') != null ? addslashes($request->get('username')) : null;
 	$password = $request->get('password') != null ? addslashes($request->get('password')) : null;
 	if($username != null && $password != null){
@@ -68,6 +69,10 @@ $user->post('/login', function(Request $request) use ($app){
 		}
 	}
 	return $app->json(array('result' => false), 200);
+});
+
+$user->post('/login/state', function() use ($app){
+	$app->json(array('result' => isLogin()), 200);
 });
 
 $user->get('/logout', function(Request $request) use ($app){
