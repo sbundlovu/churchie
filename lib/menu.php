@@ -5,7 +5,7 @@
 */
 class MenuItem
 {
-	public const TABLE = "menu_structure";
+	const TABLE = "menu_structure";
 	private $data = array('id' => null, 'name' => null, 'endpoint' => null, 'usertype' => null);
 
 	public function __get($field)
@@ -23,17 +23,18 @@ class MenuItem
 		$this->data[$field] = $value;
 	}
 
-	private static getMenuItemFromResource($resource){
+	private static function getMenuItemFromResource($resource){
 		$tmp = new MenuItem();
-		$tmp->id = $row['id'];
-		$tmp->name = $row['name'];
-		$tmp->endpoint = $row['endpoint'];
-		$tmp->usertype = $row['usertype'];
+		$tmp->id = $resource['id'];
+		$tmp->name = $resource['menu_name'];
+		$tmp->endpoint = $resource['endpoint'];
+		$tmp->usertype = $resource['usertype'];
 		return $tmp;
 	}
 
-	public static list($usertype){
-		$query = "select * from ".MenuItem::TABLE." where usertype = '$usertype'";
+	public static function listMenu($usertype){
+		$query = "select * from ".MenuItem::TABLE.
+			" where usertype = '$usertype' order by usertype, menu_name";
 		$conn = Db::get_connection();
 		$menuItems = array();
 		foreach ($conn->query($query) as $row) {
@@ -42,7 +43,7 @@ class MenuItem
 		return $menuItems;
 	}
 
-	public static IsUserAuthourized($usertype, $endpoint){
+	public static function IsUserAuthourized($usertype, $endpoint){
 		$query = "select count(id) from ".MenuItem::TABLE.
 			" where usertype = $usertype and endpoint = $endpoint";
 		$conn = Db::get_connection();
@@ -51,5 +52,9 @@ class MenuItem
 			$count = $row['id'];
 		}
 		return ($count > 0);
+	}
+
+	public static function toJson($args){
+		return ToJson(get_class(), $args, array("id", "name", "endpoint", "usertype"));
 	}
 }

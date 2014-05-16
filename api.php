@@ -30,4 +30,14 @@ $app->mount('/member_associations', include 'endpoints/memberassociation.php');
 
 $app->mount('/member_association_dues', include 'endpoints/memberassociationdue.php');
 
+$app->mount('/menus', include 'endpoints/menu.php');
+
 $app->run();
+
+function isLogin(){
+	$user = $_SESSION['user'];
+	if($user != null){
+		return true;
+	}
+	return false;
+}

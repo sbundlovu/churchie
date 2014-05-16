@@ -35,26 +35,27 @@ var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount,
 
 var createMenu = function(userType){
 	var menu = $(".navbar>.navbar-inner>.nav");
-	var url = apiBaseUrl + "/login/state";
+	var url = apiBaseUrl + "/menus";
 	$.get(
 		url,
 		"json"
 	).done(function(data){
-		userType = data['usertype'];
-		console.log(userType);
-		menu.addClass("pull-right");
-		menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		menu.append("<li><a href='#' id='attendance-menu'>Attendance</a></li>");
-		menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		menu.append("<li><a href='#' id='registration-menu'>Registration</a></li>");
+		console.log(data);
+		// userType = data['usertype'];
+		// console.log(data);
+		// menu.addClass("pull-right");
+		// menu.append("<li class='divider-vertical'>&nbsp;</li>");
+		// menu.append("<li><a href='#' id='attendance-menu'>Attendance</a></li>");
+		// menu.append("<li class='divider-vertical'>&nbsp;</li>");
+		// menu.append("<li><a href='#' id='registration-menu'>Registration</a></li>");
 
-		if(userType == "admin"){
-			menu.append("<li class='divider-vertical'>&nbsp;</li>");
-			menu.append("<li><a href='#' id='user-menu'>User</a></li>");
-			menu.append("<li class='divider-vertical'>&nbsp;</li>");
-			menu.append("<li><a href='#' id='equipment-menu'>Equipment</a></li>");
-			menu.append("<li class='divider-vertical'>&nbsp;</li>");
-		}
+		// if(userType == "admin"){
+		// 	menu.append("<li class='divider-vertical'>&nbsp;</li>");
+		// 	menu.append("<li><a href='#' id='user-menu'>User</a></li>");
+		// 	menu.append("<li class='divider-vertical'>&nbsp;</li>");
+		// 	menu.append("<li><a href='#' id='equipment-menu'>Equipment</a></li>");
+		// 	menu.append("<li class='divider-vertical'>&nbsp;</li>");
+		// }
 		menu.append("<li><a href='#' id='log-out'>Log Out</a></li>");
 
 	}).fail(function(data){
