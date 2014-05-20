@@ -2,6 +2,7 @@ var baseUrl = location.origin + "/" + location.pathname.split("/")[1];
 
 var apiBaseUrl = baseUrl+"/api.php";
 
+//This method is responsible for showing messages when actions fail or succeed
 var showMsg = function(tag, msgType,msg){
 	tag = $(tag);
 	var classes = ["alert-error", "alert-info", "alert-success"];
@@ -24,6 +25,16 @@ var showMsg = function(tag, msgType,msg){
 	}, 1000);
 };
 
+//This method is responsible for hiding all the messages boxes that are passed
+//to it
+var HideMsgBoxes = function(msgTags){
+	if(Array.isArray(msgTags)){
+		for(var i = 0, k = msgTags.length; i < k; i++){
+			$(msgTags[i]).hide();
+		}
+	}
+};
+
 var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount, 
 		columns, identityColumn, extraControls){
 	$(gridTag).html("");
@@ -33,6 +44,7 @@ var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount,
 		extraControls: extraControls});		
 };
 
+//This method is responsible for creating menus
 var createMenu = function(){
 	var menu = $(".navbar>.navbar-inner>.nav");
 	var url = apiBaseUrl + "/menus";
@@ -47,6 +59,7 @@ var createMenu = function(){
 			menu.append("<li class='divider-vertical'>&nbsp;</li>");
 			menuItem = "<li><a href='"+ result[i]['endpoint'] +"'>"+ result[i]['name'] +"</a></li>"
 			menu.append(menuItem);
+			menu.append("<li class='divider-vertical'>&nbsp;</li>");
 		}
 		menu.append("<li><a href='#' id='log-out'>Log Out</a></li>");
 		$(".navbar>.navbar-inner>.nav>li").addClass("capitalize");
@@ -55,12 +68,14 @@ var createMenu = function(){
 	});
 };
 
+//Todo: This method should check if the user is logged in at all
 var checkIfLoggedIn = function(){
 	var userType = null;
 	console.log(userType);
 	return userType;
 };
 
+//Event handler for signing out of the application
 $("body").on("click", "#log-out", function(event){
 	event.preventDefault();
 	var url = apiBaseUrl + "/users/logout";
