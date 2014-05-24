@@ -45,7 +45,7 @@
           <div class="alert" id="msg"></div>
           <div>
             <ul class="nav nav-tabs" id="myTab">
-              <li><a href="#reporting" data-toggle="tab">Reporting</a></li>
+              <li><a href="#reporting" data-toggle="tab">Add</a></li>
               <li><a href="#edit" data-toggle="tab">Edit</a></li>
               <li><a href="#delete-tab" data-toggle="tab">Delete</a></li>
             </ul>
@@ -54,145 +54,105 @@
               <div class="tab-pane" id="reporting">
                 <form class="form-horizontal">
                   <div class='control-group'>
-                    <label class="control-label" for='pnumber'>Client Number</label>
+                    <label class='control-label' for='memberid'>Member</label>
                     <div class='controls'>
-                      <select id='pnumber'>
-                        <option>--Number--</option>
+                      <select id='memberid'>
+                        <option>--Member--</option>
                       </select>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='fname'>First Name</label>
+                    <label class="control-label" for='duname'>Username</label>
                     <div class="controls">
-                      <input type="text" id="fname" disabled='true' placeholder="First Name"/>
+                      <input type="text" id="duname" placeholder="Username"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='oname'>Othernames</label>
+                    <label class="control-label" for='pword'>Password</label>
                     <div class="controls">
-                      <input type="text" id="oname" disabled='true' placeholder="Othernames"/>
+                      <input type="text" id="pword" placeholder="Password"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='phone'>Phone Number</label>
+                    <label class="control-label" for='usertype'>User Type</label>
                     <div class="controls">
-                      <input type="text" id="phone"  disabled='true' placeholder="Phone number"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for='gender'>Gender</label>
-                    <div class="controls">
-                      <select id="gender" disabled='true'>
-                        <option>--Gender--</option>
-                        <option>Male</option>
-                        <option>Female</option>
+                      <select id='usertype'>
+                        <option>--User Type--</option>
                       </select>
                     </div>
                   </div>
                   <div class="control-group">
-                    <input type='hidden' id='currentId'/>
+                    <input type='hidden' id='memberId'/>
                   </div>
                 </form>
-
-                <div>
-                  <form class='form-inline'>  
-                    <input type='text' id='weight' placeholder='Weight'/>
-                    <input type='text' id='height' placeholder='Height'/>
-                    <button class='btn' type='submit' id='save'>Check In</button>
-                  </form>
-                </div>
-
               </div>
               <!-- end of save tab -->
 
               <div class="tab-pane" id="edit">
                 <form class="form-horizontal">
-                  <div class="control-group">
-                    <label class="control-label" for='ufname'>First Name</label>
-                    <div class="controls">
-                      <input type="text" id="ufname" placeholder="First Name" disabled='true'/>
+                  <div class='control-group'>
+                    <label class='control-label' for='umember'>Member</label>
+                    <div class='controls'>
+                      <input id='umember' type='text' disabled='true'/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='uoname'>Othernames</label>
+                    <label class="control-label" for='uuname'>Username</label>
                     <div class="controls">
-                      <input type="text" id="uoname" placeholder="Othernames" disabled='true'/>
+                      <input type="text" id="uuname" placeholder="Username"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='uphone'>Phone Number</label>
+                    <label class="control-label" for='upword'>Password</label>
                     <div class="controls">
-                      <input type="text" id="uphone" placeholder="Phone number" disabled='true'/>
+                      <input type="text" id="upword" placeholder="Password"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='ugender'>Gender</label>
+                    <label class="control-label" for='uusertype'>User Type</label>
                     <div class="controls">
-                      <select id="ugender" disabled='true'>
-                        <option>--Gender--</option>
-                        <option>Male</option>
-                        <option>Female</option>
+                      <select id='uusertype'>
+                        <option>--User Type--</option>
                       </select>
                     </div>
                   </div>
                   <div class="control-group">
-                    <div class="controls">
-                      <input type='hidden' id='uattendanceId'>
-                      <input type='hidden' id='ucurrentId'/>
-                    </div>
+                    <input type='hidden' id='umemberId'/>
                   </div>
                 </form>
-
-                <div>
-                  <form class='form-inline'>
-                    <input type='text' id='uweight' placeholder='Weight'/>
-                    <input type='text' id='uheight' placeholder='Height'/>
-                    <button class='btn' type='submit' id='update'>Update</button>
-                  </form>
-                </div>
-
               </div>
               <!-- end of edit tab -->
 
               <div class="tab-pane" id="delete-tab">
                 <form class="form-horizontal">
-                  <div class="control-group">
-                    <label class="control-label" for='dfname'>First Name</label>
-                    <div class="controls">
-                      <input type="text" id="dfname" placeholder="First Name" disabled='true'/>
+                  <div class='control-group'>
+                    <label class='control-label' for='dmember'>Member</label>
+                    <div class='controls'>
+                      <input type='text' disabled='true' id='dmember' />
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='doname'>Othernames</label>
+                    <label class="control-label" for='duname'>Username</label>
                     <div class="controls">
-                      <input type="text" id="doname" placeholder="Othernames" disabled='true'/>
+                      <input type="text" id="duname" placeholder="Username"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='dphone'>Phone Number</label>
+                    <label class="control-label" for='dpword'>Password</label>
                     <div class="controls">
-                      <input type="text" id="dphone" placeholder="Phone number" disabled='true'/>
+                      <input type="text" id="dpword" placeholder="Password"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='dgender'>Gender</label>
+                    <label class="control-label" for='dusertype'>User Type</label>
                     <div class="controls">
-                      <input type='hidden' id='dattendanceId'>
-                      <input type='hidden' id='dcurrentId'/>
-                      <input type='text' id='dgender' placeholder='Gender' disabled='true'>
+                      <input type="text" id="dusertype" disabled='true' placeholder="User Type"/>
                     </div>
                   </div>
-
+                  <div class="control-group">
+                    <input type='hidden' id='dmemberId'/>
+                  </div>
                 </form>
-
-                <div>
-                  <form class='form-inline'>
-                    <input type='text' id='dweight' placeholder='Weight'/>
-                    <input type='text' id='dheight' placeholder='Height'/>
-                    <button class='btn' type='submit' id='delete'>Delete</button>
-                  </form>
-                </div>
-
               </div>
               <!-- end of delete tab -->
             </div>
@@ -215,6 +175,7 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/base.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/users.js"></script>
     <script type="text/javascript" src="js/jquery.grid.js"></script>
   </body>
 </html>
