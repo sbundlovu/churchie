@@ -7,10 +7,8 @@ class User
 {
 	const TABLE = "user";
 
-	private $data = array(
-		"id" => null, "username" => null, 
-		"password" => null, "usertype" => null, 
-		"removed" => null);
+	private $data = array("id" => null, "username" => null, "memberid" => 0,
+		"password" => null, "usertype" => null, "removed" => null);
 
 	public function __get($field){
 		if(!array_key_exists($field, $this->data)){
@@ -40,15 +38,15 @@ class User
 	}
 
 	public function save(){
-		$query = "insert into ".User::TABLE." (username, password, usertype) ".
-			"values ('$this->username',md5('$this->password'), '$this->usertype')";
+		$query = "insert into ".User::TABLE." (memberid, username, password, usertype) ".
+			"values ($this->memberid, '$this->username',md5('$this->password'), '$this->usertype')";
 		$conn = Db::get_connection();
 		return $conn->exec($query);
 	}
 
 	private static function returnUserFromResource($resource){
 		return returnObjectFromResource(get_class(), $resource, 
-			array("id", "username", "usertype", "removed"));
+			array("id", "memberid", "username", "usertype", "removed"));
 	}
 
 	public static function listUsers($args = array("usertype" => null, "removed" => 0, 
@@ -103,7 +101,8 @@ class User
 	}
 
 	public static function toJson($args){
-		return ToJson(get_class(), $args,array("id", "usertype", "username", "password", "removed"));
+		return ToJson(get_class(), $args, 
+			array("id", "memberid", "usertype", "username", "password", "removed"));
 	}
 
 	public static function countUser($args = array('removed' => 0, 'usertype' => 'attendant')){

@@ -36,6 +36,7 @@ $user->get('/filter', function(Request $request) use ($app){
 
 $user->post('/', function(Request $request) use ($app){
 	$args = array();
+	$args['memberid'] = $request->get('memberid') != null ? addslashes($request->get('memberid')) : 0;
 	$args['username'] = $request->get('username') != null ? addslashes($request->get('username')) : 0;
 	$args['usertype'] = $request->get('usertype') != null ? addslashes($request->get('usertype')) : "attendant";
 	$args['password'] = $request->get('password') != null ? addslashes($request->get('password')) : null;

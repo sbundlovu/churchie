@@ -25,7 +25,7 @@ var showMsg = function(tag, msgType,msg){
 	}, 1000);
 };
 
-//This method is responsible for returning a list of members from the backend
+//This method is responsible for populating a select with members
 var getMembers = function(control, args){
 	var url = apiBaseUrl + "/members";
 	if(args == null || args == undefined){
@@ -36,6 +36,20 @@ var getMembers = function(control, args){
 			var option = "<option value='"+ data[i]['id'] +"'>"+ 
 				(data[i]['firstname'] +' '+ data[i]['othernames']) +"</option>";
 			control.append(option)
+		}
+	});
+};
+
+//This method is responsible for populating a select with usertypes
+var getUsertypes = function(control, args){
+	var url = apiBaseUrl + "/usertypes";
+	if(args == undefined || args == undefined){
+		args = {'index': 0, 'limit': 0};
+	}
+	$.get(url, args, function(data){
+		for(var i = 0, k = data.length; i < k; i++){
+			var option = "<option>" + data[i]['name'] + "</option>";
+			control.append(option);
 		}
 	});
 };
