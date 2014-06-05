@@ -5,7 +5,7 @@
 */
 class UserType
 {
-	const TABLE = "user";
+	const TABLE = "user_type";
 
 	private $data = array("id" => null, "name" => null);
 
@@ -24,16 +24,17 @@ class UserType
 	}
 
 	public static function toJson($args){
-		return ToJson(get_class(), $args,array("id", "name"));
+		return ToJson(get_class(), $args, array("id", "name"));
 	}
 
-	public static function ListUserType(){
+	public static function listUserType(){
 		$query = "select * from ".UserType::TABLE;
 		$conn = Db::get_connection();
 		$usertypes = array();
 		foreach ($conn->query($query) as $row) {
 			array_push($usertypes, UserType::returnUserTypeFromResource($row));
 		}
+		return $usertypes;
 	}
 
 	private static function returnUserTypeFromResource($resource){

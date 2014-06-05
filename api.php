@@ -32,6 +32,8 @@ $app->mount('/member_association_dues', include 'endpoints/memberassociationdue.
 
 $app->mount('/menus', include 'endpoints/menu.php');
 
+$app->mount('/usertypes', include 'endpoints/usertype.php');
+
 $app->run();
 
 function isLogin(){

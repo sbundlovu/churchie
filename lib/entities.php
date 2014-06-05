@@ -8,3 +8,4 @@ require_once('member_association.php');
 require_once('member_association_due.php');
 require_once('menu.php');
 require_once('user.php');
+require_once('user_type.php');
