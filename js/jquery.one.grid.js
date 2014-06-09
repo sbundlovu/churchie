@@ -61,7 +61,7 @@
 		//validation arguments to the plugin
 		validateSettings(settings);
 
-		if(settings.hasOwnProperty("filterControls")){
+		if(settings.hasOwnProperty("filterControls") && settings.filterControls != null){
 			//create Filter Controls if filterControls have been passed to it
 
 			//create top div with filterControls listed in it
@@ -98,15 +98,16 @@
 				filterControlsAndValues = {},
 				filterNames = $("#data-footer-div #filterNames").val();
 
-			if(filterNames !== ""){
+			if(filterNames != undefined && filterNames != null){
 				filterNames = filterNames.split(',');
-			}
-			if(Array.isArray(filterNames)){
-				for(var i = 0, k = filterNames; i < k; i++){
-					filterName = filterNames[i];
-					filterControlValue = $('#'+ filterName).val();
-					filterControlsAndValues[filterName] = (filterControlValue === '--filter--' ? 
-						null : filterControlValue);
+			
+				if(Array.isArray(filterNames)){
+					for(var i = 0, k = filterNames; i < k; i++){
+						filterName = filterNames[i];
+						filterControlValue = $('#'+ filterName).val();
+						filterControlsAndValues[filterName] = (filterControlValue === '--filter--' ? 
+							null : filterControlValue);
+					}
 				}
 			}
 			return filterControlsAndValues;
@@ -119,7 +120,9 @@
 				theaderRow = "",
 				extraControls = settings.extraControls;
 
-			$("body #data-div").append(("<table id='grid-proper'><thead></thead>"+
+			$("body #data-div").append(("<table id='grid-proper' " +
+				"class='table table-striped table-bordered table-hover" +
+				" table-condensed'><thead></thead>"+
 				"<tbody></tbody><tfoot></tfoot></table>"));
 			tableHeader = $("body #grid-proper thead");
 
@@ -152,16 +155,18 @@
 			tableBody.html("");
 			$.get(dataListUrl, args, function(data){
 				$.each(data, function(index, value){
-					tableRow = "<tr id='" + value[settings.identityColumn] + "'>";
+					tableRow = "<tr id='" + value[settings.identityColumn] + "' class='grid-row'>";
 					for(var i = 0, k = columns.length; i < k; i++){
 						columnName = columns[i]['name'];
 						tableRow += ("<td>" + value[columnName] + "</td>");
 					}
 
 					if(extraControls != null && extraControls != undefined && Array.isArray(extraControls)){
+						tableRow += "<td>";
 						for(var i = 0, k = extraControls.length; i < k; i++){
-							tableRow += ("<td>" + extraControls[i] + "</td>");
+							tableRow += extraControls[i];
 						}
+						tableRow += "</td>";
 					}
 
 					tableRow += "</tr>";
@@ -235,10 +240,13 @@
 				identityColumnControl,
 				dataFooterDiv = $("body #data-footer-div");
 			
-			filterNamesControl = "<input type='hidden' id='filterNames' value='" +
-				settings.filterControls.toString() +"'/>";
+			if(settings.filterControls != undefined && settings.filterControls != null){
+				filterNamesControl = "<input type='hidden' id='filterNames' value='" +
+					settings.filterControls.toString() +"'/>";
+				
+				dataFooterDiv.append(filterNamesControl);	
+			}
 			
-			dataFooterDiv.append(filterNamesControl);
 			dataListUrlControl = "<input type='hidden' id='dataListUrl' value='" +
 				settings.dataListUrl + "'/>";
 			dataCountUrlControl = "<input type='hidden' id='dataCountUrl' value='" +
@@ -270,17 +278,19 @@
 				controls = settings.filterControls,
 				url = settings.filterUrl;
 
-			filterString = controls.toString();
-			args = {'filters': filterString};
+			if(controls != undefined && controls != null){
+				filterString = controls.toString();
+				args = {'filters': filterString};
 
-			$.get(url, args, function(data){
-				for(var index in controls){
-					contrl = $(("#" +controls[index]));
-					for(var i = 0, k = data[controls[index]].length; i < k; i++){
-						contrl.append(("<option>"+ data[controls[index]][i] +"</option>"));
+				$.get(url, args, function(data){
+					for(var index in controls){
+						contrl = $(("#" +controls[index]));
+						for(var i = 0, k = data[controls[index]].length; i < k; i++){
+							contrl.append(("<option>"+ data[controls[index]][i] +"</option>"));
+						}
 					}
-				}
-			});
+				});
+			}
 		};
 		
 		$("body").on("click", "#search", function(event){
@@ -292,7 +302,6 @@
 
 			columns = $("#columns").val();
 			columns = columns.toString().split(',');
-
 			for(var i = 0, k = columns.length; i < k; i++){
 				DictName.push({'name': columns[i]});
 			}
@@ -312,7 +321,7 @@
 
 		//timeout for resetting the values in the grid
 		setInterval(function(){
-			console.log('here');
+			console.log('redrawing grid');
 			var settings = {},
 				columns,
 				DictName = [];
@@ -335,7 +344,7 @@
 			};
 
 			loadGridData(settings);
-		}, 6000);
+		}, 40000);
 		
 		createTableHeader(settings);
 		createFooterForUrls(settings);
