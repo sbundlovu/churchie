@@ -3,7 +3,7 @@ var baseUrl = location.origin + "/" + location.pathname.split("/")[1];
 var apiBaseUrl = baseUrl+"/api.php";
 
 //This method is responsible for showing messages when actions fail or succeed
-var showMsg = function(tag, msgType,msg){
+var showMsg = function(tag, msgType, msg){
 	tag = $(tag);
 	var classes = ["alert-error", "alert-info", "alert-success"];
 	for(var i = 0, k = classes.length; i < k; i++){
@@ -65,12 +65,12 @@ var HideMsgBoxes = function(msgTags){
 };
 
 var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount, 
-		columns, identityColumn, extraControls){
+		columns, identityColumn, filterControls, extraControls){
 	$(gridTag).html("");
-	$(gridTag).grid({listDataUrl: listUrl, listDataCountUrl: countUrl, 
+	$(gridTag).grid({dataListUrl: listUrl, dataCountUrl: countUrl, 
 		startingPoint: startingPoint, rowCount: rowCount, 
-		columns: columns, identityColumn: identityColumn, 
-		extraControls: extraControls});		
+		columns: columns, identityColumn: identityColumn,
+		filterControls: filterControls, extraControls: extraControls});		
 };
 
 //This method is responsible for creating menus
@@ -114,4 +114,4 @@ $("body").on("click", "#log-out", function(event){
 	).done(function(event){
 		self.location = (baseUrl + "/");
 	});
-})
+});
