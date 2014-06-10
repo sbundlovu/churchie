@@ -12,6 +12,7 @@
 			settings = $.extend({
 				offset: 0, 
 				limit: 100 }, option),
+			defaultReloadInterval = 40000,
 			NoFilterUrlError = "The url for getting the values for the filters hasn't been provided",
 			FilterControlsNotArrayError = "Filters must be an array",
 			ColumnsNotArrayError = "Columns must be an array",
@@ -56,6 +57,10 @@
 					throw NoFilterUrlError;
 				}
 			}
+
+			defaultReloadInterval = (settings.reloadInterval != null && 
+				settings.reloadInterval ?  settings.reloadInterval : 
+				defaultReloadInterval);
 		}
 		
 		//validation arguments to the plugin
@@ -127,7 +132,13 @@
 			tableHeader = $("body #grid-proper thead");
 
 			for(var i = 0, k = columns.length; i < k; i++){
-				theaderRow += ("<th>" + columns[i].name + "</th>");
+				var columnName = null;
+				if(columns[i].displayName != null && columns[i].displayName != undefined){
+					columnName = columns[i].displayName;
+				}else{
+					columnName = columns[i].name;
+				}
+				theaderRow += ("<th>" + columnName + "</th>");
 			}
 			if(extraControls != null && extraControls != undefined){
 				theaderRow += ("<th>Operations</th>");
@@ -344,7 +355,7 @@
 			};
 
 			loadGridData(settings);
-		}, 40000);
+		}, defaultReloadInterval);
 		
 		createTableHeader(settings);
 		createFooterForUrls(settings);

@@ -65,12 +65,14 @@ var HideMsgBoxes = function(msgTags){
 };
 
 var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount, 
-		columns, identityColumn, filterControls, extraControls){
+		columns, identityColumn, reloadInterval, filterControls, extraControls){
 	$(gridTag).html("");
 	$(gridTag).grid({dataListUrl: listUrl, dataCountUrl: countUrl, 
 		startingPoint: startingPoint, rowCount: rowCount, 
-		columns: columns, identityColumn: identityColumn,
-		filterControls: filterControls, extraControls: extraControls});		
+		columns: columns, identityColumn: identityColumn, 
+		reloadInterval: reloadInterval, filterControls: filterControls, 
+		extraControls: extraControls
+	});		
 };
 
 //This method is responsible for creating menus
