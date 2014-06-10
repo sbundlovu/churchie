@@ -7,10 +7,13 @@ $(function(){
 		startingPoint = 0,
 		limit = 100,
 		columns = [
-			{'name': 'id'}, {'name': 'memberid'}, 
-			{'name': 'username'}, {'name': 'usertype'}
+			{'name': 'id'}, {'name': 'firstname', 'displayName': 'First Name'}, 
+			{'name': 'othernames', 'displayName': 'Othernames'}, 
+			{'name': 'username', 'displayName': 'Username'}, 
+			{'name': 'usertype', 'displayName': 'User Type'}
 			],
 		identityColumn = "id",
+		reloadInterval = 40000,
 		extraControls = [
 			"<div class='btn-group'>","<button class='btn btn-mini edit-btn'>Edit</button>", 
 			"<button class='btn btn-mini delete-btn'>Delete</button>", "</div>"
@@ -21,7 +24,7 @@ $(function(){
 	getMembers($("#memberid"));
 
 	createGrid(gridTag, listUrl, countUrl, startingPoint, limit, columns, 
-		identityColumn, null, extraControls);
+		identityColumn, reloadInterval, null, extraControls);
 
 	for(var i = 0, k = userTypeControls.length; i < k; i++){
 		getUsertypes($(userTypeControls[i]));

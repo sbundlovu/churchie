@@ -3,12 +3,15 @@
 /**
 * User class
 */
+require_once('member.php');
+
 class User
 {
 	const TABLE = "user";
 
-	private $data = array("id" => null, "username" => null, "memberid" => 0,
-		"password" => null, "usertype" => null, "removed" => null);
+	private $data = array("id" => null, 'firstname' => null, 'othernames' => null,
+		"username" => null, "memberid" => 0, "password" => null, "usertype" => null, 
+		"removed" => null);
 
 	public function __get($field){
 		if(!array_key_exists($field, $this->data)){
@@ -46,31 +49,34 @@ class User
 
 	private static function returnUserFromResource($resource){
 		return returnObjectFromResource(get_class(), $resource, 
-			array("id", "memberid", "username", "usertype", "removed"));
+			array("id", "firstname", "othernames", "memberid", "username", 
+				"usertype", "removed"));
 	}
 
 	public static function listUsers($args = array("usertype" => null, "removed" => 0, 
 		"index" => 0, "limit" => 100)){
-		$query = "select * from ".User::TABLE;
+		$query = "select u.*,m.firstname, m.othernames from ".User::TABLE.
+			" as u join ".Member::TABLE." as m on (u.memberid = m.id)";
 		$whereSet = 0;
 
 		if(array_key_exists("usertype", $args) && isset($args["usertype"])){
-			$query .= " where usertype = '".$args["usertype"]."'";
+			$query .= " where u.usertype = '".$args["usertype"]."'";
 			$whereSet = 1;
 		}
 
 		if(array_key_exists("removed", $args)){
 			if($whereSet == 1){
-				$query .= " and removed = ".$args["removed"];
+				$query .= " and u.removed = ".$args["removed"];
 			}else{
-				$query .= " where removed = ".$args["removed"];
+				$query .= " where u.removed = ".$args["removed"];
 			}
 		}
 
-		$query .= " order by id desc";
+		$query .= " order by u.id desc";
 		
 		$query .= check_list_limits($args);
 		$users = array();
+
 		$conn = Db::get_connection();
 		foreach ($conn->query($query) as $row) {
 			$user = User::returnUserFromResource($row);
@@ -101,8 +107,8 @@ class User
 	}
 
 	public static function toJson($args){
-		return ToJson(get_class(), $args, 
-			array("id", "memberid", "usertype", "username", "password", "removed"));
+		return ToJson(get_class(), $args,  array("id", "firstname", "othernames",
+			"memberid", "usertype", "username", "password", "removed"));
 	}
 
 	public static function countUser($args = array('removed' => 0, 'usertype' => 'attendant')){
