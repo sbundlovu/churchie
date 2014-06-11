@@ -29,7 +29,7 @@ $user->get('/meta/count', function(Request $request) use ($app){
 });
 
 $user->get('/filter', function(Request $request) use ($app){
-	$args = explode(',', $request->get('filters'));
+	$args = explode(',', ($request->get('filters').","));
 	$filters = array('removed' => 0, 'usertype' => "'attendant'");
 	return $app->json(User::getFilters($args, $filters), 200);
 });

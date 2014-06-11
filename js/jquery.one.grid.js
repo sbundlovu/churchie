@@ -13,6 +13,7 @@
 				offset: 0, 
 				limit: 100 }, option),
 			defaultReloadInterval = 40000,
+			filterPrefix = "cmbo",
 			NoFilterUrlError = "The url for getting the values for the filters hasn't been provided",
 			FilterControlsNotArrayError = "Filters must be an array",
 			ColumnsNotArrayError = "Columns must be an array",
@@ -78,13 +79,16 @@
 			}else{
 				//do this if the filterControls that are passed to it is an array
 				for(var i = 0, k = settings.filterControls.length; i < k; i++){
-					var filterName = settings.filterControls[i],
-						control = "<div class='filter-element-div'><label>" + filterName;
+					var controlLabel = settings.filterControls[i]['label'],
+						controlName = settings.filterControls[i]['name'],
+						control = "";
+					control = "<div class='filter-element-div'><label>" + controlLabel;
 
-					control += "<select id='"+ filterName;
+					control += "<select id='"+ (filterPrefix + controlName);
 					control += "'><option>--filter--</option></select></label></div>";
 					filterDiv.append(control);
 				}
+
 				filterDiv.append("<button id='search'>Search</button>");
 			}
 		}
@@ -105,11 +109,10 @@
 
 			if(filterNames != undefined && filterNames != null){
 				filterNames = filterNames.split(',');
-			
 				if(Array.isArray(filterNames)){
-					for(var i = 0, k = filterNames; i < k; i++){
+					for(var i = 0, k = filterNames.length; i < k; i++){
 						filterName = filterNames[i];
-						filterControlValue = $('#'+ filterName).val();
+						filterControlValue = $('#' + filterPrefix + filterName).val();
 						filterControlsAndValues[filterName] = (filterControlValue === '--filter--' ? 
 							null : filterControlValue);
 					}
@@ -133,10 +136,10 @@
 
 			for(var i = 0, k = columns.length; i < k; i++){
 				var columnName = null;
-				if(columns[i].displayName != null && columns[i].displayName != undefined){
-					columnName = columns[i].displayName;
+				if(columns[i]['label'] != null && columns[i]['label'] != undefined){
+					columnName = columns[i]['label'];
 				}else{
-					columnName = columns[i].name;
+					columnName = columns[i]['name'];
 				}
 				theaderRow += ("<th>" + columnName + "</th>");
 			}
@@ -251,9 +254,14 @@
 				identityColumnControl,
 				dataFooterDiv = $("body #data-footer-div");
 			
+			
 			if(settings.filterControls != undefined && settings.filterControls != null){
+				var filterCtrl = [];
+				for(var i = 0, k = settings.filterControls.length; i < k; i++){
+					filterCtrl.push(settings.filterControls[i]['name']);
+				}
 				filterNamesControl = "<input type='hidden' id='filterNames' value='" +
-					settings.filterControls.toString() +"'/>";
+					filterCtrl.toString() +"'/>";
 				
 				dataFooterDiv.append(filterNamesControl);	
 			}
@@ -295,7 +303,7 @@
 
 				$.get(url, args, function(data){
 					for(var index in controls){
-						contrl = $(("#" +controls[index]));
+						contrl = $(("#" + filterPrefix + controls[index]));
 						for(var i = 0, k = data[controls[index]].length; i < k; i++){
 							contrl.append(("<option>"+ data[controls[index]][i] +"</option>"));
 						}

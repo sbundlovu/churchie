@@ -4,13 +4,14 @@ $(function(){
 		userTypeControls = ['#usertype', '#uusertype'],
 		listUrl = apiBaseUrl + "/users",
 		countUrl = apiBaseUrl + "/users/meta/count",
+		filterUrl = apiBaseUrl + "/users/filter",
 		startingPoint = 0,
 		limit = 100,
 		columns = [
-			{'name': 'id'}, {'name': 'firstname', 'displayName': 'First Name'}, 
-			{'name': 'othernames', 'displayName': 'Othernames'}, 
-			{'name': 'username', 'displayName': 'Username'}, 
-			{'name': 'usertype', 'displayName': 'User Type'}
+			{'name': 'id'}, {'name': 'firstname', 'label': 'First Name'}, 
+			{'name': 'othernames', 'label': 'Othernames'}, 
+			{'name': 'username', 'label': 'Username'}, 
+			{'name': 'usertype', 'label': 'User Type'}
 			],
 		identityColumn = "id",
 		reloadInterval = 40000,
@@ -18,13 +19,14 @@ $(function(){
 			"<div class='btn-group'>","<button class='btn btn-mini edit-btn'>Edit</button>", 
 			"<button class='btn btn-mini delete-btn'>Delete</button>", "</div>"
 			],
+		filterControls = [{"name": "usertype", "label": "User Type"}],
 		gridTag = "#gridZ";
 
 	HideMsgBoxes(['#msg'])
 	getMembers($("#memberid"));
 
 	createGrid(gridTag, listUrl, countUrl, startingPoint, limit, columns, 
-		identityColumn, reloadInterval, null, extraControls);
+		identityColumn, reloadInterval, filterUrl, filterControls, extraControls);
 
 	for(var i = 0, k = userTypeControls.length; i < k; i++){
 		getUsertypes($(userTypeControls[i]));

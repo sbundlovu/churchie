@@ -64,14 +64,17 @@ var HideMsgBoxes = function(msgTags){
 	}
 };
 
+//This method is responsible for creating the grid control on the pages when the
+//right arguments are passed to it
 var createGrid = function (gridTag, listUrl, countUrl, startingPoint, rowCount, 
-		columns, identityColumn, reloadInterval, filterControls, extraControls){
+		columns, identityColumn, reloadInterval, filterUrl, filterControls, 
+		extraControls){
 	$(gridTag).html("");
 	$(gridTag).grid({dataListUrl: listUrl, dataCountUrl: countUrl, 
 		startingPoint: startingPoint, rowCount: rowCount, 
 		columns: columns, identityColumn: identityColumn, 
-		reloadInterval: reloadInterval, filterControls: filterControls, 
-		extraControls: extraControls
+		reloadInterval: reloadInterval, filterUrl: filterUrl, 
+		filterControls: filterControls,  extraControls: extraControls
 	});		
 };
 
