@@ -22,7 +22,7 @@ var showMsg = function(tag, msgType, msg){
 	tag.alert();
 	setTimeout(function(){
 		$(tag).hide();
-	}, 1000);
+	}, 3000);
 };
 
 //This method is responsible for populating a select with members

@@ -290,22 +290,29 @@
 			}
 		};
 		
+		//This method is responsible for getting the values that have been selected
+		//in the filter combo boxes
 		var getValuesForFilters = function(settings){
 			var args,
 				contrl,
 				filterString = "",
+				tmp = [],
 				controls = settings.filterControls,
 				url = settings.filterUrl;
 
 			if(controls != undefined && controls != null){
-				filterString = controls.toString();
+				for(var i = 0, k = controls.length; i < k; i++){
+					tmp.push(controls[i]['name']);
+				}
+				filterString = tmp.toString();
+
 				args = {'filters': filterString};
 
 				$.get(url, args, function(data){
 					for(var index in controls){
-						contrl = $(("#" + filterPrefix + controls[index]));
-						for(var i = 0, k = data[controls[index]].length; i < k; i++){
-							contrl.append(("<option>"+ data[controls[index]][i] +"</option>"));
+						contrl = $(("#" + filterPrefix + controls[index]['name']));
+						for(var i = 0, k = data[controls[index]['name']].length; i < k; i++){
+							contrl.append(("<option>"+ data[controls[index]['name']][i] +"</option>"));
 						}
 					}
 				});
