@@ -86,7 +86,9 @@ class User
 	}
 
 	public static function findUser($id){
-		$query = "select * from ".User::TABLE." where id = $id limit 1";
+		$query = "select u.*,m.firstname, m.othernames from ".User::TABLE.
+			" as u join ".Member::TABLE." as m on (u.memberid = m.id) ".
+			"where u.id = $id limit 1";
 		$user = null;
 		$conn = DB::get_connection();
 		foreach ($conn->query($query) as $row) {
