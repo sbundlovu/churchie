@@ -5,16 +5,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 $association = $app['controllers_factory'];
 
-$association->get('/', function() use ($app) {
-	return "Hello world";
+$association->get('/', function(Request $request) use ($app) {
+	$args = array();
+	$args['index'] = $request->get('index') != null ? addslashes($request->get('index')) : 0;
+	$args['limit'] = $request->get('limit') != null ? addslashes($request->get('limit')) : DEFAULT_MAX_RESULT_SIZE;
+	$args['name'] = $request->get('name') != null ? addslashes($request->get('name')) : null;
+	$args['removed'] = $request->get('removed') != null ? addslashes($request->get('removed')) : 0;
+ 	return $app->json(Association::toJson(Association::listAssociations($args)), 200);
 });
 
 $association->post('/', function(Request $request) use ($app) {
 	$args = array();
+	$user = $_SESSION['user'];
 	$args['name'] = $request->get('name') != null ? addslashes($request->get('name')) : null;
 	$args['description'] = $request->get('description') != null ? addslashes($request->get('description')) : null;
 	$args['date_added'] = $request->get('date_added') != null ? addslashes($request->get('date_added')) : null;
-	$args['added_by'] = $request->get('added_by') != null ? addslashes($request->get('added_by')) : null;
+	$args['added_by'] = $user->id;
 	$association = new Association();
 	foreach ($args as $key => $value) {
 		$association->$key = $value;
@@ -59,8 +65,9 @@ $association->delete('/{associationid}', function(Request $request, $association
 	$foundAssociation = Association::findAssociation(addslashes($associationid));
 	if($foundAssociation != null){
 		$args = array();
+		$user = $_SESSION['user'];
 		$args['reason_removed'] = $request->get('reason_removed') != null ? addslashes($request->get('reason_removed')) : null;
-		$args['removed_by'] = $request->get('removed_by') != null ? addslashes($request->get('removed_by')) : 0;
+		$args['removed_by'] = $user->id;
 		foreach ($args as $key => $value) {
 			$foundAssociation->$key = $value;
 		}
