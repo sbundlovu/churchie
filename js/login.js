@@ -1,21 +1,32 @@
 $(function(){
 
+	hideMsgBoxes(['#msg']);
+
 	$("body").on("click", "#signin", function(event){
 		event.preventDefault();
 		var args = {username : $("#username").val(), password: $("#password").val()};
-		var url1 = apiBaseUrl + "/users/login";
+		var url = apiBaseUrl + "/users/login";
 
-		$.ajax({
-			type: "POST",
-			url: url1,
-			data: args,
-			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-			success: function(data){
-				self.location = baseUrl + "/main.html"
-			},
-			error: function(data){
-				console.log("error");
+		$.post(
+			url,
+			args
+		).done(function(data){
+			
+			if(data['result'] == true){
+				showMsg("#msg", "success", "login successful");
+				setInterval(function(){
+					self.location = baseUrl + "/main.html";
+				}, 1000);
+			}else{
+				showMsg("#msg", "error", 
+					"Please check your username and password and try agains");
 			}
+			
+		}).fail(function(data){
+			
+			showMsg("#msg", "error", 
+				"Unexpected error occurred please try again");
+
 		});
 
 	});
