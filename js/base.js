@@ -56,7 +56,7 @@ var getUsertypes = function(control, args){
 
 //This method is responsible for hiding all the messages boxes that are passed
 //to it
-var HideMsgBoxes = function(msgTags){
+var hideMsgBoxes = function(msgTags){
 	if(Array.isArray(msgTags)){
 		for(var i = 0, k = msgTags.length; i < k; i++){
 			$(msgTags[i]).hide();
@@ -90,7 +90,6 @@ var createMenu = function(){
 		var menuItem = null;
 		menu.addClass("pull-right");
 		for(var i = 0, k = result.length; i < k; i++){
-			menu.append("<li class='divider-vertical'>&nbsp;</li>");
 			menuItem = "<li><a href='"+ result[i]['endpoint'] +"'>"+ result[i]['name'] +"</a></li>"
 			menu.append(menuItem);
 			menu.append("<li class='divider-vertical'>&nbsp;</li>");
@@ -100,6 +99,9 @@ var createMenu = function(){
 	}).fail(function(data){
 		self.location = (baseUrl + "/");
 	});
+
+	$(".brand").val("Church Manager");
+
 };
 
 //Todo: This method should check if the user is logged in at all
