@@ -62,43 +62,7 @@
 			defaultReloadInterval = (settings.reloadInterval != null && 
 				settings.reloadInterval ?  settings.reloadInterval : 
 				defaultReloadInterval);
-		}
-		
-		//validation arguments to the plugin
-		validateSettings(settings);
-
-		if(settings.hasOwnProperty("filterControls") && settings.filterControls != null){
-			//create Filter Controls if filterControls have been passed to it
-
-			//create top div with filterControls listed in it
-			parent.append("<div id='filter-div'></div>");
-			filterDiv = $("body #filter-div");
-
-			if(!Array.isArray(settings['filterControls'])){
-				throw FilterControlsNotArrayError;
-			}else{
-				//do this if the filterControls that are passed to it is an array
-				for(var i = 0, k = settings.filterControls.length; i < k; i++){
-					var controlLabel = settings.filterControls[i]['label'],
-						controlName = settings.filterControls[i]['name'],
-						control = "";
-					control = "<div class='filter-element-div'><label>" + controlLabel;
-
-					control += "<select id='"+ (filterPrefix + controlName);
-					control += "'><option>--filter--</option></select></label></div>";
-					filterDiv.append(control);
-				}
-
-				filterDiv.append("<button id='search'>Search</button>");
-			}
-		}
-
-		//create div for holding data
-		parent.append("<div id='data-div'></div>");
-		
-		//create hidden field in footer that contains the names of the filter
-		//controls
-		parent.append("<div id='data-footer-div'></div>");
+		};
 		
 		//function for getting the values from the FilterControls
 		var getFilterControlsAndValues = function(){
@@ -319,6 +283,77 @@
 			}
 		};
 		
+		//This method is responsible for reloading a grid
+		var reloadGrid = function(){
+
+			console.log('redrawing grid');
+			var settings = {},
+				columns,
+				DictName = [];
+
+			columns = $("#columns").val();
+			columns = columns.toString().split(',');
+
+			for(var i = 0, k = columns.length; i < k; i++){
+				DictName.push({'name': columns[i]});
+			}
+
+			settings = {
+				'dataListUrl': $("#dataListUrl").val(),
+				'dataCountUrl': $("#dataCountUrl").val(),
+				'columns': DictName,
+				'identityColumn': $("#identityColumn").val(),
+				'extraControls': $.jStorage.get('extraControls', undefined),
+				'limit': $("#limit").val(),
+				'offset': 0
+			};
+
+			loadGridData(settings);
+		};
+
+		//validation arguments to the plugin
+		validateSettings(settings);
+
+		if(settings.hasOwnProperty("filterControls") && settings.filterControls != null){
+			//create Filter Controls if filterControls have been passed to it
+
+			//create top div with filterControls listed in it
+			parent.append("<div id='filter-div'></div>");
+			filterDiv = $("body #filter-div");
+
+			if(!Array.isArray(settings['filterControls'])){
+				throw FilterControlsNotArrayError;
+			}else{
+				//do this if the filterControls that are passed to it is an array
+				var form = "<form class='form-horizontal'>";
+				for(var i = 0, k = settings.filterControls.length; i < k; i++){
+					var controlLabel = settings.filterControls[i]['label'],
+						controlName = filterPrefix + settings.filterControls[i]['name'],
+						control = "",
+						controlGroupDiv = "<div class='control-group'>";
+
+					controlGroupDiv += "<label class='control-label' for='" + 
+						controlName +"'>" + controlLabel + "</label><div class='controls'>";
+
+					control += "<select id='"+ controlName;
+					control += "'><option>--filter--</option></select></label></div>";
+					controlGroupDiv += (control + "</div>");
+					form += controlGroupDiv;
+				}
+				form += ("<div class='control-group'><div class='controls'>" +
+					"<button id='search'>Search</button></div></div>");
+				form += "</form>";
+				filterDiv.append(form);
+			}
+		}
+
+		//create div for holding data
+		parent.append("<div id='data-div'></div>");
+		
+		//create hidden field in footer that contains the names of the filter
+		//controls
+		parent.append("<div id='data-footer-div'></div>");
+
 		$("body").on("click", "#search", function(event){
 			event.preventDefault();
 
@@ -347,29 +382,7 @@
 
 		//timeout for resetting the values in the grid
 		setInterval(function(){
-			console.log('redrawing grid');
-			var settings = {},
-				columns,
-				DictName = [];
-
-			columns = $("#columns").val();
-			columns = columns.toString().split(',');
-
-			for(var i = 0, k = columns.length; i < k; i++){
-				DictName.push({'name': columns[i]});
-			}
-
-			settings = {
-				'dataListUrl': $("#dataListUrl").val(),
-				'dataCountUrl': $("#dataCountUrl").val(),
-				'columns': DictName,
-				'identityColumn': $("#identityColumn").val(),
-				'extraControls': $.jStorage.get('extraControls', undefined),
-				'limit': $("#limit").val(),
-				'offset': 0
-			};
-
-			loadGridData(settings);
+			reloadGrid();
 		}, defaultReloadInterval);
 		
 		createTableHeader(settings);
