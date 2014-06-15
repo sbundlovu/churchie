@@ -45,7 +45,7 @@ $(function(){
 		});
 	};
 
-	HideMsgBoxes(['#msg'])
+	hideMsgBoxes(['#msg'])
 	getMembers($("#memberid"));
 
 	createGrid(gridTag, listUrl, countUrl, startingPoint, limit, columns, 
@@ -54,7 +54,6 @@ $(function(){
 	for(var i = 0, k = userTypeControls.length; i < k; i++){
 		getUsertypes($(userTypeControls[i]));
 	}
-
 
 	$("#myTab a:first").tab('show');
 
