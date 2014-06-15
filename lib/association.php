@@ -55,10 +55,16 @@ class Association
 				"reason_removed", "date_removed"));
 	}
 
-	public static function listAssociations($args = array("index" => 0, "limit" => 100, 
-		"removed" => 0)){
+	public static function listAssociations($args = array("name"=> null, 
+		"index" => 0, "limit" => 100, "removed" => 0)){
 		
 		$query = "select * from ".Association::TABLE;
+		$args['and'] = false;
+		if($args['name'] != null){
+			$query .= " where name = '".$args['name']."'";
+			$args['and'] = true;
+		}
+
 		$query = queryBuilder($query, $args);
 		$conn = Db::get_connection();
 		$associations = array();
