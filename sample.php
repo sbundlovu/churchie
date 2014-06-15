@@ -33,7 +33,7 @@ include_once("lib/entities.php");
 // $memberAssociationDue->dues = date("m");
 // print " => ".$memberAssociationDue->save();
 // print var_dump($associationDue);
-// print var_dump(User::listUsers(array("index" => 0, "limit" => 1, "removed" => 1)));
+print var_dump(User::listUsers(array("index" => 0, "limit" => 1, "removed" => 0)));
 // print var_dump(MemberAssociationDue::listMemberAssociationDues());
 
-print var_dump(MenuItem::listMenu('attendant'));
+// print var_dump(UserType::listUserType());
