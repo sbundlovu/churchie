@@ -15,9 +15,10 @@ $associationDue->get('/', function(Request $request) use ($app) {
 
 $associationDue->post('/', function(Request $request) use ($app) {
 	$args = array();
+	$user = $_SESSION['user'];
 	$args['association_id'] = $request->get('association_id') != null ? addslashes($request->get('association_id')) : null;
 	$args['dues'] = $request->get('dues') != null ? addslashes($request->get('dues')) : null;
-	$args['added_by'] = $request->get('added_by') != null ? addslashes($request->get('added_by')) : null;
+	$args['added_by'] = $user->id;
 	$association_due = new AssociationDue();
 	foreach ($args as $key => $value) {
 		$association_due->$key = $value;

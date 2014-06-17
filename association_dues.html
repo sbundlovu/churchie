@@ -54,31 +54,17 @@
               <div class="tab-pane" id="reporting">
                 <form class="form-horizontal">
                   <div class='control-group'>
-                    <label class='control-label' for='memberid'>Member</label>
+                    <label class='control-label' for='associationId'>Association</label>
                     <div class='controls'>
-                      <select id='memberid'>
-                        <option>--Member--</option>
+                      <select id='associationId'>
+                        <option>--Association--</option>
                       </select>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='uname'>Username</label>
+                    <label class="control-label" for='dues'>Dues</label>
                     <div class="controls">
-                      <input type="text" id="uname" placeholder="Username"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for='pword'>Password</label>
-                    <div class="controls">
-                      <input type="password" id="pword" placeholder="Password"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for='usertype'>User Type</label>
-                    <div class="controls">
-                      <select id='usertype'>
-                        <option>--User Type--</option>
-                      </select>
+                      <input type="text" id="dues" placeholder="Dues"/>
                     </div>
                   </div>
                   <div class="control-group">
@@ -93,29 +79,15 @@
               <div class="tab-pane" id="edit">
                 <form class="form-horizontal">
                   <div class='control-group'>
-                    <label class='control-label' for='umember'>Member</label>
+                    <label class='control-label' for='uassociation'>Association</label>
                     <div class='controls'>
-                      <input id='umember' type='text' disabled='true'/>
+                      <input id='uassociation' type='text' disabled='true'/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='uuname'>Username</label>
+                    <label class="control-label" for='udues'>Dues</label>
                     <div class="controls">
-                      <input type="text" id="uuname" placeholder="Username"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for='upword'>Password</label>
-                    <div class="controls">
-                      <input type="password" id="upword" placeholder="Password"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for='uusertype'>User Type</label>
-                    <div class="controls">
-                      <select id='uusertype'>
-                        <option>--User Type--</option>
-                      </select>
+                      <input type="text" id="udues" placeholder="Dues"/>
                     </div>
                   </div>
                   <div class="control-group">
@@ -124,7 +96,7 @@
                     </div>
                   </div>
                   <div class="control-group">
-                    <input type='hidden' id='uhuserId'/>
+                    <input type='hidden' id='uhduesId'/>
                   </div>
                 </form>
               </div>
@@ -133,21 +105,15 @@
               <div class="tab-pane" id="delete-tab">
                 <form class="form-horizontal">
                   <div class='control-group'>
-                    <label class='control-label' for='dmember'>Member</label>
+                    <label class='control-label' for='dassociation'>Member</label>
                     <div class='controls'>
-                      <input type='text' disabled='true' id='dmember' placeholder="Name"/>
+                      <input type='text' disabled='true' id='dassociation' placeholder="Association"/>
                     </div>
                   </div>
                   <div class="control-group">
-                    <label class="control-label" for='duname'>Username</label>
+                    <label class="control-label" for='ddues'>Username</label>
                     <div class="controls">
-                      <input type="text" id="duname" placeholder="Username" disabled='true'/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for='dusertype'>User Type</label>
-                    <div class="controls">
-                      <input type="text" id="dusertype" disabled='true' placeholder="User Type"/>
+                      <input type="text" id="ddues" placeholder="Dues" disabled='true'/>
                     </div>
                   </div>
                   <div class='control-group'>
@@ -156,7 +122,7 @@
                     </div>
                   </div>
                   <div class="control-group">
-                    <input type='hidden' id='dhuserId'/>
+                    <input type='hidden' id='dhduesId'/>
                   </div>
                 </form>
               </div>

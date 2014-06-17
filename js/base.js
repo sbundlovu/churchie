@@ -25,33 +25,58 @@ var showMsg = function(tag, msgType, msg){
 	}, 3000);
 };
 
+//This method is responsible for populating a select which has both
+//an id and a text attribute
+var populateCombo = function(url, control, args, dataColumns, 
+	identityColumn){
+
+	if(url == undefined || url == null || url == ""){
+		throw "make sure the url provide is a valid api endpoint";
+	}
+	
+	if(control == undefined || control == null || control == ""){
+		throw "make sure you provide a jquery control";
+	}
+
+	if(args == undefined || args == null){
+		args = {'index': 0, 'limit': 0};
+	}
+
+	$.get(url, args, function(data){
+		for(var i = 0, k = data.length; i < k; i++){
+			var option = "<option";
+			if(identityColumn != undefined && identityColumn != null && 
+				identityColumn != ""){
+				option += " value = '" + data[i][identityColumn] + "'"
+			}
+			option += ">";
+			tmp = "";
+			for(var a = 0, b = dataColumns.length; a < b; a++){
+				tmp += data[i][dataColumns[a]] + " ";
+			}
+			tmp = tmp.trim();
+			option += (tmp + "</option>");
+			control.append(option);
+		}
+	});
+};
+
 //This method is responsible for populating a select with members
 var getMembers = function(control, args){
 	var url = apiBaseUrl + "/members";
-	if(args == null || args == undefined){
-		args = {'index': 0, 'limit': 0};
-	}
-	$.get(url, args, function(data){
-		for(var i = 0, k = data.length; i < k; i++){
-			var option = "<option value='"+ data[i]['id'] +"'>"+ 
-				(data[i]['firstname'] +' '+ data[i]['othernames']) +"</option>";
-			control.append(option)
-		}
-	});
+	populateCombo(url, control, args, ['firstname', 'othernames'], 'id');
 };
 
 //This method is responsible for populating a select with usertypes
 var getUsertypes = function(control, args){
 	var url = apiBaseUrl + "/usertypes";
-	if(args == undefined || args == undefined){
-		args = {'index': 0, 'limit': 0};
-	}
-	$.get(url, args, function(data){
-		for(var i = 0, k = data.length; i < k; i++){
-			var option = "<option>" + data[i]['name'] + "</option>";
-			control.append(option);
-		}
-	});
+	populateCombo(url, control, args, ['name']);
+};
+
+//This method is responsible for populating a select with the association in the system
+var getAssociations = function(control, args){
+	var url = apiBaseUrl + "/associations";
+	populateCombo(url, control, args, ['name'], 'id');
 };
 
 //This method is responsible for hiding all the messages boxes that are passed
