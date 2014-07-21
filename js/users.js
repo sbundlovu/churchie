@@ -45,7 +45,7 @@ $(function(){
 		});
 	};
 
-	hideMsgBoxes(['#msg'])
+	hideMsgBoxes(['#msg']);
 	getMembers($("#memberid"));
 
 	createGrid(gridTag, listUrl, countUrl, startingPoint, limit, columns, 

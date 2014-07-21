@@ -9,6 +9,7 @@ class Member
 
 	private $data = array("id" => null, "firstname" => null,
 		"othernames" => null, "gender" => null, 
+		'occupation_id' => 0, 'dob' => null, 
 		"registration_date" => null, "added_by" => null, 
 		"picture_url" => null, "removed" => null, 
 		"phonenumber" => null, "reason_removed" => null, 
@@ -62,8 +63,9 @@ class Member
 
 	private static function returnMemberFromResource($resource){
 		return returnObjectFromResource(get_class(), $resource, 
-			array("id", "firstname", "othernames", "gender", "registration_date", "added_by", 
-				"picture_url", "removed", "phonenumber", "reason_removed", "date_removed"));
+			array("id", "firstname", "othernames", "gender", 'occupation_id',
+				'dob', "registration_date", "added_by", "picture_url", 
+				"removed", "phonenumber", "reason_removed", "date_removed"));
 	}
 
 	public static function listMembers($args = array("removed" => 0, "index" => 0, "limit" => 100)){
@@ -111,13 +113,13 @@ class Member
 	}
 
 	public static function toJson($args){
-		return ToJson(get_class(), $args, array("id", "firstname", "othernames", "gender", 
-			"registration_date", "added_by", "picture_url", "removed", "phonenumber", 
-			"reason_removed", "date_removed"));
+		return ToJson(get_class(), $args, array('id', 'firstname', 'othernames', 
+			'gender', 'occupation_id', 'dob', 'registration_date', 'added_by', 
+			'picture_url', 'removed', 'phonenumber', 'reason_removed', 'date_removed'));
 	}
 
-	public static function getFilters($args = array('id', 'firstname', 'othernames', 'gender', 'phonenumber'),
-		$filters = array('removed' => 0)){
+	public static function getFilters($args = array('id', 'firstname', 'othernames', 
+		'gender', 'phonenumber'), $filters = array('removed' => 0)){
 		return getFilters(Member::TABLE, $args, $filters);
 	}
 }
