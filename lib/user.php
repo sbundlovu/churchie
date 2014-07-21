@@ -75,6 +75,7 @@ class User
 		$query .= " order by u.id desc";
 		
 		$query .= check_list_limits($args);
+		// print $query;
 		$users = array();
 
 		$conn = Db::get_connection();
@@ -113,10 +114,12 @@ class User
 			"memberid", "usertype", "username", "password", "removed"));
 	}
 
-	public static function countUser($args = array('removed' => 0, 'usertype' => 'attendant')){
-		$query = "select count(id) as record_count from ".User::TABLE.
-			" where usertype = '".$args['usertype']."'";
-		$args['and'] = true;
+	public static function countUser($args = array('removed' => 0, 'usertype' => null)){
+		$query = "select count(id) as record_count from ".User::TABLE;
+		if(array_key_exists('usertype', $args) && $args['usertype'] != null){
+			$query .= " where usertype ='".$args['usertype']."'";
+			$args['and'] = true;
+		}
 		$query = queryBuilder($query, $args);
 		$conn = Db::get_connection();
 		$usercount = 0;

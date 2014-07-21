@@ -12,9 +12,9 @@ $user->get('/', function(Request $request) use ($app){
 	$args['index'] = $request->get('index') != null ? addslashes($request->get('index')) : 0;
 	$args['limit'] = $request->get('limit') != null ? addslashes($request->get('limit')) : DEFAULT_MAX_RESULT_SIZE;
 	$args['removed'] = $request->get('removed') != null ? addslashes($request->get('removed')) : 0;
-	$args['usertype'] = $request->get('usertype') != null ? addslashes($request->get('usertype')) : "attendant";
+	$args['usertype'] = $request->get('usertype') != null ? addslashes($request->get('usertype')) : null;
 	$results = User::toJson(User::listUsers($args));
-	return $app->json(User::toJson(User::listUsers($args)), 200);
+	return $app->json($results, 200);
 });
 
 $user->get('/{userid}', function($userid) use ($app){
